@@ -114,7 +114,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles_build', 'static')
 
 MEDIA_URL = 'media/'
 # MEDIA_ROOT = BASE_DIR / 'media'
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles_build', 'media')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'staticfiles_build', 'media')
 
 
 WSGI_APPLICATION = 'store.wsgi.application'
