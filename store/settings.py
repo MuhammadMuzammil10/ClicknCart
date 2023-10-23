@@ -54,7 +54,6 @@ INSTALLED_APPS = [
     'app',
     'accounts',
     'django.contrib.humanize',
-    'storages',
 ]
 
 
@@ -112,7 +111,7 @@ DATABASES = {
 
 STORAGES = {
     "default": {
-        "BACKEND": "storages.backends.dropbox.DropboxStorage",
+        "BACKEND": "storages.backends.dropbox.DropBoxStorage",
     },
     "staticfiles": {
         "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
