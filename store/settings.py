@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     'app',
     'accounts',
     'django.contrib.humanize',
+    'storages',
 ]
 
 
