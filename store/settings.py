@@ -126,7 +126,7 @@ MEDIA_URL = 'media/'
 # MEDIA_ROOT = BASE_DIR / 'media'
 # MEDIA_ROOT = os.path.join(BASE_DIR, 'staticfiles_build', 'media')
 
-DEFAULT_FILE_STORAGE = "storages.backends.dropbox.DropBoxStorage"
+# DEFAULT_FILE_STORAGE = "storages.backends.dropbox.DropBoxStorage"
 DROPBOX_ACCESS_TOKEN = "sl.Bod58T6crRu-JRkg_WVo-ZNvM8cHmu81HDLy3_Wri0iohdKPaiskfN4kVHPyA4cZkx48HP0ZqutDT-pL05ay97idCCS9XMvb-GQt3BTDf2xxAPHUzM7rWVPkMOu0R3sp2d8lzt0CMM8ObZCpzvSv6jk"
 
 DROPBOX_ROOT_PATH = 'media'
