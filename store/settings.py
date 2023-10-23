@@ -112,12 +112,9 @@ DATABASES = {
 STORAGES = {
     "default": {
         "BACKEND": "storages.backends.dropbox.DropboxStorage",
-        "OPTIONS": {
-        #   ...your_options_here
-        },
     },
     "staticfiles": {
-        "BACKEND": "storages.backends.dropbox.DropboxStorage",
+        "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
     },
 }
 
