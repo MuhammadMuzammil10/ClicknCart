@@ -1,0 +1,146 @@
+{% extends 'app/base.html' %}
+{% load static %}
+{% load custom_filters %}
+{% block title %}
+	Cart
+{% endblock title %}
+{% block main-content %}
+		<main class="main cart">
+			<div class="page-content pt-7 pb-10">
+				<div class="step-by pr-4 pl-4">
+                    <h3 class="title title-simple title-step active"><a href="{% url 'show-cart' %}">1. Shopping Cart</a></h3>
+                    <h3 class="title title-simple title-step"><a href="#">2. Checkout</a></h3>
+					<h3 class="title title-simple title-step"><a href="#">3. Order Complete</a></h3>
+				</div>
+				<div class="container mt-7 mb-2">
+					{% if form.non_field_errors %}
+						{% for error in form.non_field_errors %}
+							<h6 class="text-danger">{{error|safe }}</h6>
+						{% endfor %}
+					{% endif %}
+					<div class="row">
+						<div class="col-lg-8 col-md-12 pr-lg-4">
+							<table class="shop-table cart-table">
+								<thead>
+									<tr>
+										<th><span>Product</span></th>
+										<th></th>
+										<th><span>Price</span></th>
+										<th><span>quantity</span></th>
+										<th>Subtotal</th>
+									</tr>
+								</thead>
+								<tbody>
+                                    {% for cart in carts.cartitem_set.all %}
+									<tr>
+										<td class="product-thumbnail">
+											<figure>
+												<a href="{{cart.product.get_absoulte_url}}">
+													<img src="{{cart.product.main_picture.url}}" width="100" height="100"
+														alt="product">
+												</a>
+											</figure>
+										</td>
+										<td class="product-name">
+											<div class="product-name-section">
+												<a href="{{cart.product.get_absoulte_url}}">{{cart.product.title}} {% if cart.variant %} - {{cart.variant.attributes.value}} {% endif %} </a>
+											</div>
+										</td>
+										<td class="product-subtotal">
+											{% if cart.variant.price %}
+												<span class="amount" style="font-size: medium;">Rs.{{cart.variant.price|format_price}}</span>
+												{% else %}  
+												<span class="amount" style="font-size: medium;">Rs.{{cart.product.discounted_price|format_price}}</span>
+											{% endif %}
+										</td>
+										<td class="product-quantity">
+											<div class="input-group">
+											<div class="wrapper">
+												<button class="minus minus-cart" pid="{{cart.product.id}}">-<button>
+												<span class="num" id="quantity">{{cart.quantity}}</span>
+												<button class="plus plus-cart" pid="{{cart.product.id}}">+</button>
+											  </div>
+											</div>
+										</td>
+										<td class="product-price">
+											<span class="amount" id="subTotal" style="font-size: medium;">Rs.{{cart.per_price|format_price}}</span>
+										</td>
+										<td class="product-close">
+											<button  class="product-remove remove_btn" pid="{{cart.product.id}}" title="Remove this product">
+												<i class="fas fa-times"></i>
+											</button>
+										</td>
+									</tr>
+                                    {% endfor %}
+									
+								</tbody>
+							</table>
+							<div class="cart-actions mb-6 pt-4">
+								<a href="{% url 'shop' %}" class="btn btn-dark btn-md btn-rounded btn-icon-left mr-4 mb-4"><i class="d-icon-arrow-left"></i>Continue Shopping</a>
+							</div>
+							<div class="cart-coupon-box mb-8">
+								<h4 class="title coupon-title text-uppercase ls-m">Coupon Discount</h4>
+								<section id="for-coupon-error"></section>
+								<form action="{% url 'coupon-form' %}" method="POST" id="coupon-form" enctype="multipart/form-data">
+									{% csrf_token %}
+                                    <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+                                    <input type="hidden" name="cart_id" value="{{ carts.id }}">
+									<input type="text" name="coupon_code"
+                                    class="input-text form-control ls-m mb-4" id="coupon_code" 
+                                    placeholder="Enter coupon code here...">
+									<button type="submit" class="btn btn-md btn-dark btn-rounded btn-outline"  id="coupon-btn" >Apply Coupon</button>
+								</form>
+							</div>
+						</div>
+						<aside class="col-lg-4 sticky-sidebar-wrapper">
+							<div class="sticky-sidebar" data-sticky-options="{'bottom': 20}">
+								<div class="summary mb-4">
+									<h3 class="summary-title text-left">Cart Totals</h3>
+									<table class="shipping" id="cart-table">
+										{% if carts.coupon %}
+										<tr class="summary-subtotal">
+											<td>
+												<h4 class="summary-subtitle">Coupon Discount {{carts.coupon.discount}}% </h4>
+											</td>
+											<td>
+												<p class="summary-subtotal-price coupon_discount">- Rs.{{carts.coupon_discount|format_price}}</p>
+											</td>												
+										</tr>
+										{% endif %}
+										<tr class="summary-subtotal">
+											<td>
+												<h4 class="summary-subtitle">Subtotal</h4>
+											</td>
+											<td>
+												<p class="summary-subtotal-price Subtotal">Rs.{{amount|format_price}}</p>
+											</td>												
+										</tr>
+										<tr class="sumnary-shipping shipping-row-last">
+											<td>
+												<h4 class="summary-subtitle">Shipping</h4>
+											</td>
+											<td>
+												<p class="summary-subtotal-price" id="shipping_amount">{{Shipping|format_price}}</p>
+											</td>																							
+										</tr>
+									</table>
+									<table class="total">
+										<tr class="summary-subtotal">
+											<td>
+												<h4 class="summary-subtitle">Total</h4>
+											</td>
+											<td>
+												<p class="summary-total-price ls-s totalAmount">Rs.{{totalAmount|format_price}}</p>
+											</td>												
+										</tr>
+									</table>
+									<a href="{% url 'checkout' %}" class="btn btn-dark btn-rounded btn-checkout">Proceed to checkout</a>
+								</div>
+							</div>
+						</aside>
+					</div>
+				</div>
+			</div>
+		</main>
+        {% endblock main-content %}
+		

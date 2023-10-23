@@ -1,0 +1,74 @@
+{% extends 'app/base.html' %}
+{% load static %}
+{% load socialaccount %}
+{% providers_media_js %}
+{% block main-content %}
+<main class="main">
+    <nav class="breadcrumb-nav">
+        <div class="container">
+            <ul class="breadcrumb">
+                <li><a href="/"><i class="d-icon-home"></i></a></li>
+                <li>Register</li>
+            </ul>
+        </div>
+    </nav>
+    <div class="page-content mt-6 pb-2 mb-10">
+        <div class="container">
+            <div class="login-popup">
+                <div class="form-box">
+                    <div class="tab tab-nav-simple tab-nav-boxed form-tab">
+                        <ul class="nav nav-tabs nav-fill align-items-center border-no justify-content-center mb-5"
+                            role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link active border-no lh-1 ls-normal" href="{% url 'register' %}">Register</a>
+                            </li>
+                        </ul>
+                        <div class="tab-content">
+                            <div class="tab-pane active" id="register">
+                                <form action="{% url 'login' %}" method="POST" id="user_creation_form"
+                                enctype="multipart/form-data" novalidate>
+                                {% csrf_token %}
+                                <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+                                <small id="form1_error"></small>
+                                <small id="form_success"></small>
+
+                                <div class="mb-2">
+                                    {{form.username}}
+                                    <small id="username_error" class="text-danger"></small>
+                                </div>
+                                <div class="mb-2">
+                                    {{form.email}}
+                                    <small id="email_error" class="text-danger"></small>
+
+                                </div>
+                                <div class="mb-2">
+                                    {{form.password1}}
+                                    <small id="password1_error" class="text-danger"></small>
+
+                                </div>
+                                <div class="mb-2">
+                                    {{form.password2}}
+                                    <small id="password2_error" class="text-danger"></small>
+
+                                </div>
+
+                                <input type="hidden" name="form_type" value="formTwo">
+                                <button type="submit" class="btn btn-dark btn-block btn-rounded register-btn">Register</button>
+                            </form>
+                            <label class="ls-m">or Login With</label>
+                                <div class="social-links">
+                                    <a href="{% url 'social:begin' 'google-oauth2' %}"
+                                        class="social-link social-google fab fa-google border-no"></a>
+                                    <a href="{% provider_login_url 'facebook' method='js_sdk' %}"
+                                        class="social-link social-facebook fab fa-facebook-f border-no"></a>
+                                    <a href="#" class="social-link social-twitter fab fa-twitter border-no"></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock main-content %}

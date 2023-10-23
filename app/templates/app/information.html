@@ -1,0 +1,9 @@
+{% extends 'app/base.html' %}
+{% load static %}
+{% block main-content %}
+    <div class="comtainer mt-5 mb-5">
+        <div class="container">
+            {{ information.description|safe }}
+        </div>
+    </div>
+{% endblock main-content %}

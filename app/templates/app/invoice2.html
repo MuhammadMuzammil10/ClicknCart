@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>Invoice</title>
+	<style>
+		body {
+			font-family: Arial, sans-serif;
+			font-size: 14px;
+			line-height: 1.5;
+			color: #333;
+		}
+		table {
+			width: 100%;
+			border-collapse: collapse;
+			margin-bottom: 20px;
+		}
+		th, td {
+			padding: 10px;
+			border: 1px solid #ccc;
+			text-align: left;
+		}
+		th {
+			background-color: #f2f2f2;
+			font-weight: bold;
+		}
+		.invoice-header {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			margin-bottom: 20px;
+		}
+		.invoice-header h1 {
+			font-size: 24px;
+			margin: 0;
+		}
+		.invoice-header p {
+			margin: 0;
+		}
+		.invoice-details {
+			display: flex;
+			justify-content: space-between;
+			align-items: flex-start;
+			margin-bottom: 20px;
+		}
+		.invoice-details div {
+			flex-basis: 50%;
+		}
+		.invoice-details h2 {
+			font-size: 18px;
+			margin: 0 0 10px;
+		}
+		.invoice-details p {
+			margin: 0;
+		}
+		.invoice-items {
+			margin-bottom: 20px;
+		}
+		.invoice-items th {
+			background-color: #f2f2f2;
+			font-weight: bold;
+			text-align: center;
+		}
+		.invoice-items td {
+			text-align: center;
+		}
+		.invoice-total {
+			display: flex;
+			justify-content: flex-end;
+			align-items: center;
+			font-size: 18px;
+			font-weight: bold;
+		}
+		.invoice-total span {
+			margin-right: 10px;
+		}
+	</style>
+</head>
+<body>
+	<div class="invoice-header">
+		<h1>Invoice</h1>
+		<!-- <p>Date: 13 June 2023</p> -->
+	</div>
+	<div class="invoice-details">
+		<div>
+			<h2>Billed To:</h2>
+			<p> {{order.biling_address.first_name}} {{order.biling_address.last_name}} <br>{{order.biling_address.address}}<br> {{order.biling_address.area}} , {{order.biling_address.city}} {{order.biling_address.zipcode}}</p>
+		</div>
+		<div>
+			<h2>Invoice Details:</h2>
+			<p>Invoice #: {{order.id}}<br>Due Date: {{order.date}}</p>
+		</div>
+	</div>
+	<table class="invoice-items">
+		<thead>
+			<tr>
+				<th>Product</th>
+				<th>Price</th>
+				<th>Quantity</th>
+				<th>Total</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for item in order.orderitem_set.all %}
+			<tr>
+				<td>{{item.product.title}}</td>
+				<td>Rs {{item.product.discounted_price}}</td>
+				<td>{{item.quantity}}</td>
+				<td>{{item.per_price}}</td>
+			</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+	<hr>
+	<div class="invoice-total">
+		<span>Subtotal:</span>
+		<span style="font-weight: 200; font-size: medium;">Rs {{order.sub_total}}</span>
+	</div>
+	<hr>
+	<div class="invoice-total">
+		<span>Shipping:</span>
+		<span style="font-weight: 200; font-size: medium;">Rs {{order.flat_shipping_rate}}</span>
+	</div>
+	<hr>
+	<div class="invoice-total">
+		<span>Total:</span>
+		<span style="font-weight: 200; font-size: medium;">Rs {{order.total_amount}}</span>
+	</div>
+</body>
+</html>

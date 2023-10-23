@@ -1,0 +1,247 @@
+{% extends 'app/base.html' %}
+{% load static %}
+{% block main-content %}
+<!-- End Header -->
+<main class="main">
+	<div class="page-header"
+		style="background-image: url('/static/app/images/shop/page-header-back.jpg'); background-color: #3C63A4;">
+		<h3 class="page-subtitle">Categories</h3>
+		<h1 class="page-title">List Mode</h1>
+		<ul class="breadcrumb">
+			<li><a href="demo1.html"><i class="d-icon-home"></i></a></li>
+			<li class="delimiter">/</li>
+			<li>Products tagged “list mode”</li>
+		</ul>
+	</div>
+	<!-- End PageHeader -->
+	<div class="page-content mb-10 pb-6">
+		<div class="container">
+			<div class="row gutter-lg main-content-wrap">
+				<aside class="col-lg-3 sidebar sidebar-fixed sidebar-toggle-remain shop-sidebar sticky-sidebar-wrapper">
+					<div class="sidebar-overlay"></div>
+					<a class="sidebar-close" href="#"><i class="d-icon-times"></i></a>
+					<div class="sidebar-content">
+						<div class="sticky-sidebar" data-sticky-options="{'top': 10}">
+							<div class="filter-actions mb-4">
+								<a href="#"
+									class="sidebar-toggle-btn toggle-remain btn btn-outline btn-primary btn-icon-right">Filter<i
+										class="d-icon-arrow-left"></i></a>
+								<a href="#" class="filter-clean">Clean All</a>
+							</div>
+							<div class="widget widget-collapsible">
+								<h3 class="widget-title">All Categories</h3>
+								<ul class="widget-body filter-items search-ul">
+									<li><a href="#">Accessosries</a></li>
+									<li>
+										<a href="{% url 'shop-list' 'Ba' 'all' %}">Bags</a>
+										<ul style="display: block">
+											<li><a href="{% url 'shop-list' 'M' 'Ba' %}">Backpacks & Fashion Bags</a>
+											</li>
+										</ul>
+									</li>
+									<li>
+										<a href="#">Electronics</a>
+										<ul>
+											<li><a href="#">Computer</a></li>
+											<li><a href="#">Gaming & Accessosries</a></li>
+										</ul>
+									</li>
+									<li><a href="#">For Fitness</a></li>
+									<li><a href="#">Home & Kitchen</a></li>
+									<li><a href="{% url 'shop-list' 'M' 'all' %}">Men's</a></li>
+									<li><a href="{% url 'shop-list' 'Sho' 'all' %}">Shoes</a></li>
+									<li><a href="#">Sporting Goods</a></li>
+									<li><a href="{% url 'shop-list' 'W' 'Cl' %}">Summer Season's</a></li>
+									<li><a href="{% url 'shop-list' 'M' 'Cl' %}">Travel & Clothing</a></li>
+									<li><a href="{% url 'shop-list' 'Wa' 'all' %}">Watches</a></li>
+									<li><a href="{% url 'shop-list' 'W' 'all' %}">Women’s</a></li>
+								</ul>
+							</div>
+							<div class="widget widget-collapsible">
+								<h3 class="widget-title">Filter by Price</h3>
+								<div class="widget-body mt-3">
+									<form action="" id="filter_by_price_shop_list">
+										<input type="hidden" name="data" category="{{data}}" subcategory="{{subcategory}}">
+										<div class="wra">
+											<div class="values">
+												<span id="range1">
+												Rs 500
+												</span>
+												<span> &dash; </span>
+												<span id="range2">
+												Rs 3000
+												</span>
+											</div>
+											<div class="cont">
+												<div class="slider-track"></div>
+												<input type="range" min="0" max="10000" value="500" id="slider-1" oninput="slideOne()">
+												<input type="range" min="0" max="10000" value="3000" id="slider-2" oninput="slideTwo()">
+											</div>
+										</div>
+										<button type="submit" class="btn btn-dark btn-filter" id="filter-btn">Filter</button>
+									</form><!-- End Filter Price Form -->
+								</div>
+							</div>
+							
+							<div class="widget widget-collapsible">
+								<h3 class="widget-title">Brands</h3>
+								<ul class="widget-body filter-items">
+									<li><a href="#">Cinderella</a></li>
+									<li><a href="#">Comedy</a></li>
+									<li><a href="#">Rightcheck</a></li>
+									<li><a href="#">SkillStar</a></li>
+									<li><a href="#">SLS</a></li>
+								</ul>
+							</div>
+						</div>
+					</div>
+				</aside>
+				<div class="col-lg-9 main-content">
+					<nav class="toolbox sticky-toolbox sticky-content fix-top">
+						<div class="toolbox-left">
+							<a href="#"
+								class="toolbox-item left-sidebar-toggle btn btn-sm btn-outline btn-primary btn-icon-right d-lg-none">Filter<i
+									class="d-icon-arrow-right"></i></a>
+							<div class="toolbox-item toolbox-sort select-box text-dark">
+								<label>Sort By :</label>
+								<select name="orderby" class="form-control" id="filter-select-shop-list">
+									<option value="default">Default</option>
+									<option value="popularity" selected="selected">Most Popular</option>
+									<option value="rating">Average rating</option>
+									<option value="date" category="{{data}}" subcategory="{{subcategory}}">Latest
+									</option>
+									<option value="price-low" category="{{data}}" subcategory="{{subcategory}}">Sort
+										forward price low</option>
+									<option value="price-high" category="{{data}}" subcategory="{{subcategory}}">Sort
+										forward price high</option>
+								</select>
+							</div>
+						</div>
+						<div class="toolbox-right">
+							<div class="toolbox-item toolbox-layout">
+								<a href="{% url 'shop-list' data subcategory %}" class="d-icon-mode-list btn-layout active"></a>
+								<a href="{% url 'shop' data subcategory %}" class="d-icon-mode-grid btn-layout"></a>
+							</div>
+						</div>
+					</nav>
+					<div class="product-lists product-wrapper">
+						{% for product in page_obj %}
+						<div class="product product-list">
+							<figure class="product-media">
+								<a href="{{product.get_absolute_url}}">
+									<img src="{{product.main_picture.url}}" alt="product" width="260" height="293">
+								</a>
+								{% if product.discount_perc > 0 %}
+								<div class="product-label-group">
+									<label class="product-label label-sale">-{{product.discount_perc}}% off</label>
+								</div>
+								{% endif %}
+							</figure>
+							<div class="product-details" style="max-width: 28rem;">
+								<div class="product-cat">
+									<a href="{% url 'shop-list' product.category.name product.subcategory.name %}">{{product.get_sub_categories_display }}</a>
+								</div>
+								<h3 class="product-name">
+									<a href="{{product.get_absolute_url}}">{{product.title}}</a>
+								</h3>
+								<div class="product-price">
+									<span class="price">Rs {{product.discounted_price}}</span>
+								</div>
+								{% if product.reviews_set.count > 0 %}
+								<div class="ratings-container">
+									<div class="ratings-full">
+										<span class="ratings" style="width: {{ product.average_rating}}%"></span>
+										<span class="tooltiptext tooltip-top"></span>
+									</div>
+									<a href="#" class="rating-reviews">( <span class="review-count"> {{ product.reviews_set.count }} </span> reviews)</a>
+								</div>
+								{% endif %}
+								<p class="product-short-desc">
+									{{product.description|linebreaks|truncatechars:60}}
+								</p>
+								{% if request.user.is_authenticated %}
+								<!-- <div class="product-action">
+									<a href="#" class="btn-product btn-cart addtocart-1" title="Add to cart"
+										pid="{{product.id}}"><i class="d-icon-bag"></i></a>
+								</div> -->
+								<div class="product-action">
+									<a href="#" class="btn-product btn-cart addtocart-1" pid="{{product.id}}" data-toggle="modal"
+										data-target="#addCartModal" title="Add to cart"><i
+											class="d-icon-bag"></i><span>Add to cart</span></a>
+									<a href="#" class="btn-product-icon btn-wishlist" title="Add to wishlist"><i
+											class="d-icon-heart"></i></a>
+									<a href="{{product.get_absolute_url}}" class="btn-product-icon btn-quickview" title="Quick View"><i
+											class="d-icon-search"></i></a>
+										</div>
+										{% else %}
+										<div class="product-action">
+											<a href="/cart/" class=" btn-cart " title="Add to cart"><i
+												class="d-icon-bag"></i></a>
+												<a href="#" class="btn-product-icon btn-wishlist" title="Add to wishlist"><i
+														class="d-icon-heart"></i></a>
+												<a href="{% url 'product-detail' product.id %}" class="btn-product-icon btn-quickview" title="Quick View"><i
+														class="d-icon-search"></i></a>
+								</div>
+								{% endif %}
+							</div>
+						</div>
+						{% endfor %}
+					</div>
+					<nav class="toolbox toolbox-pagination" id="paginator">
+						<p class="show-info">Showing <span> {{page_obj.start_index}} to {{page_obj.end_index}} of
+								{{page_obj.paginator.count}}</span> Products</p>
+						<ul class="pagination">
+
+							{% if page_obj.has_previous %}
+							<li class="page-item">
+
+								<a class="page-link page-link-prev" href="?page={{page_obj.previous_page_number}}"
+									aria-label="Previous" tabindex="-1" aria-disabled="true">
+									<i class="d-icon-arrow-left"></i>Prev
+								</a>
+							</li>
+							{% else %}
+							<li class="page-item disabled">
+								<a class="page-link page-link-prev" href="#" aria-label="Previous" tabindex="-1"
+									aria-disabled="true">
+									<i class="d-icon-arrow-left"></i>Prev
+								</a>
+							</li>
+							{% endif %}
+
+							</li>
+							{% for l in page_obj.paginator.page_range %}
+							{% if forloop.counter < 3 %} {% if forloop.counter == page_obj.number %} <li
+								class="page-item active" aria-current="page"><a class="page-link"
+									href="#">{{page_obj.number}}</a>
+								{% else %}
+								<li class="page-item"><a class="page-link"
+										href="?page={{forloop.counter}}">{{forloop.counter}}</a></li>
+								{% endif %}
+								{% endif %}
+								{% endfor %}
+								<li class="page-item page-item-dots"><a class="page-link" href="#">{{page_obj.paginator.page_range|length }}</a></li>
+								{% if page_obj.has_next %}
+								<li class="page-item">
+									<a class="page-link page-link-next" href="?page={{page_obj.next_page_number}}"
+										aria-label="Next">
+										Next<i class="d-icon-arrow-right"></i>
+									</a>
+								</li>
+								{% else %}
+								<li class="page-item disabled">
+									<a class="page-link page-link-next" href="#" aria-label="Next">
+										Next<i class="d-icon-arrow-right"></i>
+									</a>
+								</li>
+
+								{% endif %}
+						</ul>
+					</nav>
+				</div>
+			</div>
+		</div>
+	</div>
+</main>
+<!-- End Main -->
+{% endblock %}

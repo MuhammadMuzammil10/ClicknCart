@@ -1,0 +1,369 @@
+{% load i18n static admin_soft %}
+{% get_current_language as LANGUAGE_CODE %}
+{% get_current_language_bidi as LANGUAGE_BIDI %}
+{% get_direction as direction %}
+{% get_admin_setting as admin_setting %}
+
+<!DOCTYPE html>
+<html lang="{{ LANGUAGE_CODE|default:"en-us" }}">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>
+      Soft UI Dashboard - {% block title %}{% endblock %}
+    </title>
+
+    <!-- Favicon -->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="apple-touch-icon" sizes="76x76" href="{% static 'img/apple-icon.png' %}">
+    <link rel="icon" type="image/png" href="{% static 'img/favicon.png' %}">
+
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
+    <!-- Nucleo Icons -->
+    <link href="{% static 'css/nucleo-icons.css' %}" rel="stylesheet" />
+    <link href="{% static 'css/nucleo-svg.css' %}" rel="stylesheet" />
+    <!-- Font Awesome Icons -->
+    <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
+    <link href="{% static 'css/nucleo-svg.css' %}" rel="stylesheet" />
+    <!-- CSS Files -->
+    <link id="pagestyle" href="{% static 'css/soft-ui-dashboard.css' %}" rel="stylesheet" />
+    <link id="pagestyle_dark" href="{% static 'css/dark-theme-core.css' %}" rel="stylesheet" />
+
+    {% block extrahead %}{% endblock extrahead %}
+    {% block extrastyle %}
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+    <link rel="stylesheet" href="/resources/demos/style.css">
+    {% endblock extrastyle %}
+
+</head>
+
+<body class="g-sidenav-show bg-gray-100">
+
+    {% include "includes/sidebar.html" %}
+    <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
+        {% include "includes/navigation.html" %} 
+        {% block content %}{% endblock content %}
+
+        <div class="modal fade" id="orderModal" tabindex="-1" role="dialog" aria-labelledby="orderModalLabel" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="orderModalLabel">Order Details</h5>
+                <button type="button" class="close" onclick="closeModal();" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <div class="card mb-4">
+                  <div class="card-header p-3 pb-0">
+                    <div class="d-flex justify-content-between align-items-center">
+                      <div>
+                        <p class="text-sm mb-0">
+                          Order no. <b id="order-id"></b> from <b id="order-date"></b>
+                        </p>
+                        <p class="text-sm">
+                          Payment Method: <b id="payment-method"></b>
+                        </p>
+                      </div>
+                      <a href="" id="invoice-href" class="btn bg-gradient-secondary ms-auto mb-0">Invoice</a>
+                    </div>
+                  </div>
+                  <div class="card-body p-3 pt-0" style="padding: 0.5rem;">
+                    <hr class="horizontal dark mt-0 mb-4">
+                    <div class="row">
+                      <div class="col-lg-6 col-md-6 col-12">
+                        <h6 class="mb-3 mt-4">Billing Information</h6>
+                        <ul class="list-group" id="address-div">
+                          
+                        </ul>
+                      </div>
+                      <div class="col-lg-4 col-12 ms-auto">
+                        <h6 class="mb-3">Order Summary</h6>
+                        <div class="d-flex justify-content-between">
+                          <span class="mb-2 text-sm">
+                            Subtotal:
+                          </span>
+                          <span class="text-dark font-weight-bold ms-2" id="subtotal"></span>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                          <span class="text-sm">
+                            Shipping rate:
+                          </span>
+                          <span class="text-dark ms-2 font-weight-bold" id="shipping-rate"></span>
+                        </div>
+                        <div class="d-flex justify-content-between mt-4">
+                          <span class="mb-2 text-lg">
+                            Total:
+                          </span>
+                          <span class="text-dark text-lg ms-2 font-weight-bold" id="total"></span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="card">
+                    <div class="card-body px-0 pb-2">
+                      <div class="table-responsive">
+                        <table class="table align-items-center mb-0">
+                          <thead>
+                            <tr>
+                              <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Product</th>
+                              <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Quantity</th>
+                              <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Total</th>
+                            </tr>
+                          </thead>
+                          <tbody id="table-body">
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+    </main>
+
+    <!-- APP Configurator -->
+    {% include "includes/fixed-plugin.html" %} 
+
+<!--   Core JS Files   -->
+{% include 'includes/scripts.html' %}
+
+
+{% block scripts %}{% endblock scripts %}
+
+<script>
+    var win = navigator.platform.indexOf('Win') > -1;
+    if (win && document.querySelector('#sidenav-scrollbar')) {
+      var options = {
+        damping: '0.5'
+      }
+      Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
+    }
+</script>
+
+<!-- Github buttons -->
+<script async defer src="https://buttons.github.io/buttons.js"></script>
+<!-- Control Center for Soft Dashboard: parallax effects, scripts for the example pages etc -->
+<script src="{% static 'js/soft-ui-dashboard.min.js' %}"></script>
+<script src="{% static 'js/scripts.js' %}"></script>
+
+{% block extrascript %}
+
+<script src="https://cdn.tiny.cloud/1/46r4l0u24ivnvab7plhr8jbuc3jxfi7er60gqv5ydwqnyc82/tinymce/5/tinymce.min.js"
+            referrerpolicy="origin"></script>
+
+<script>
+  tinymce.init({
+      selector: '.richtext_field',
+      content_css: 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css',
+      forced_root_block : false,
+      force_br_newlines : true,
+      force_p_newlines : false,
+      menubar: 'file edit view insert format tools table tc help',
+      toolbar: 'undo redo | bold italic underline strikethrough | fontselect fontsizeselect formatselect | alignleft aligncenter alignright alignjustify | outdent indent |  numlist bullist checklist | forecolor backcolor casechange permanentpen formatpainter removeformat | pagebreak | charmap emoticons | fullscreen  preview save print | insertfile image media pageembed template link anchor codesample | a11ycheck ltr rtl | showcomments addcomment',
+      autosave_ask_before_unload: true,
+      autosave_interval: '30s',
+      autosave_prefix: '{path}{query}-{id}-',
+      autosave_restore_when_empty: false,
+      autosave_retention: '2m',
+      image_advtab: true,
+      automatic_uploads: false,
+      link_list: [
+          {title: 'My page 1', value: 'https://www.tiny.cloud'},
+          {title: 'My page 2', value: 'http://www.moxiecode.com'}
+      ],
+      image_list: [
+          {title: 'My page 1', value: 'https://www.tiny.cloud'},
+          {title: 'My page 2', value: 'http://www.moxiecode.com'}
+      ],
+      image_class_list: [
+          {title: 'None', value: ''},
+          {title: 'Some class', value: 'class-name'}
+      ],
+      importcss_append: false, // disable importing of inline CSS styles
+      
+  });
+</script>
+
+<script>
+  function filterSubcategories(categoryId) {
+      console.log("Function called 1");
+      var subcategoryField = $('#id_subcategory');
+
+    
+      if (categoryId) {
+          $.ajax({
+            url: '/subcategories/',
+            data: { category: categoryId },
+            dataType: 'json',
+            success: function(subcategories) {
+              console.log(subcategories)
+              var subcategory_select = $('#id_subcategory');
+              subcategory_select.empty();
+              subcategory_select.append('<option value="">--------</option>');
+                    $.each(subcategories, function(index, subcategory) {
+                        subcategory_select.append('<option value="' + subcategory.id + '">' + subcategory.name + '</option>');
+                    });
+            },
+            error: function(xhr, status, error) {
+              console.log('Request failed. Returned status of ' + xhr.status);
+            }
+          });
+      }
+    }
+
+  function filterSubSubcategories(categoryId) {
+      console.log("Function called 2");
+      var subcategoryField = $('#id_subsubcategory');
+      subcategoryField.html('<option value="">---------</option>');
+    
+      if (categoryId) {
+          $.ajax({
+            url: '/subsubcategories/',
+            data: { subcategory: categoryId },
+            dataType: 'json',
+            success: function(subcategories) {
+              console.log(subcategories)
+              var subcategory_select = $('#id_subsubcategory');
+                    subcategory_select.empty();
+                    $.each(subcategories, function(index, subcategory) {
+                        subcategory_select.append('<option value="' + subcategory.id + '">' + subcategory.name + '</option>');
+                    });
+            },
+            error: function(xhr, status, error) {
+              console.log('Request failed. Returned status of ' + xhr.status);
+            }
+          });
+      }
+    }
+    
+    function ShowVariations(option){
+      console.log('function ShowVariations')
+      console.log(option , 'option')
+      if (option == '1') {
+        $('#productvariation_set-group').hide()
+      }
+      if (option == '2') {
+        $('#productvariation_set-group').show()
+      }
+    }
+</script>
+<script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+<script>
+  $( function() {
+    $( ".datepicker" ).datepicker();
+  } );
+  </script>
+  <script>
+    $(document).ready(function(){
+      if ($('#productvariation_set-group')){
+        $('#productvariation_set-group').hide()
+      }
+        $('#button-filter-p').click(function (event) {
+          console.log('click');
+          start_date = $('#input-date-start').val()
+          end_date = $('#input-date-end').val()
+          order_status = $("#input-order-status").val()
+          console.log(start_date)
+          console.log(end_date)
+          console.log(order_status , 'order_status')
+          $.ajax({
+            url : '/product-sales/',
+            type : 'GET',
+            data : {start_date : start_date , end_date : end_date , order_status : order_status},
+            success : function(data){
+              // console.log(data)
+              $("#purschase-report-table").empty()
+              $.each(data, function(product_name , sales) {
+                $("#purschase-report-table").append(
+                  `
+                  <tr>
+                    <td>
+                        <div class="d-flex px-2 py-1">
+                            <div>
+                                <img src="${sales.product_img}"
+                                    class="avatar avatar-sm me-3" alt="xd">
+                            </div>
+                            <div class="d-flex flex-column justify-content-center">
+                                <h6 class="mb-0 text-sm">${product_name}</h6>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="avatar-group mt-2">
+                            <span class="text-xs font-weight-bold"> ${sales.quantity_sold} </span>
+                        </div>
+                    </td>
+                    <td class="align-middle text-center text-sm">
+                        <span class="text-xs font-weight-bold"> Rs ${sales.total_sales} </span>
+                    </td>
+
+                </tr>
+                  `
+                )           
+              })
+            }
+          })
+
+        })
+    });
+
+    function show_order_detail(order_id) {
+      $.ajax({
+          url: '/order_modal/' + order_id + '/',
+          type: 'GET',
+          dataType: 'json',
+          success: function(data) {
+            console.log(data)
+            billing_address = data.billing_address[0]
+              $('#orderModal').modal('show');
+              $("#invoice-href").attr("href" , `/print-invoice/${data.id}/`)
+              $('#subtotal').html(`Rs.${data.subtotal}`)
+              $('#total').html(`Rs.${data.total_amount}`)
+              $('#shipping-rate').html(`Rs.${data.shipping_rate}`)
+              $('#payment-method').html(`${data.payment_method}`)
+              $('#order-id').html(`${data.id}`)
+              $('#order-date').html(`${data.date}`)
+              $("#address-div").html(`<li class="list-group-item border-0 d-flex p-4 mb-2 bg-gray-100 border-radius-lg" style="width: max-content">
+                <div class="d-flex flex-column">
+                  <h6 class="mb-3 text-sm">${billing_address.first_name} ${billing_address.last_name} </h6>
+                  <h6 class="mb-3 text-sm">${billing_address.locality} </h6>
+                  <h6 class="mb-3 text-sm">${billing_address.area} </h6>
+                  <h6 class="mb-3 text-sm">${billing_address.zipcode} </h6>
+                  <span class="mb-2 text-xs">Email Address: <a href="mailto:${billing_address.email}"> <span class="text-info ms-2 font-weight-bold">${billing_address.email}</span></a> </span>
+                  <span class="text-xs">Phone: <a href="tel:${billing_address.phone}"> <span class="text-info ms-2 font-weight-bold">${billing_address.phone}</span></a></span>
+                </div>
+              </li>`)
+              data.orderitem.forEach(function(i){
+              $('#table-body').append(`<tr>
+                <td class="align-middle text-center text-sm">
+                  <span class="text-xs font-weight-bold">${i.product}</span>
+                </td>
+                <td class="align-middle text-center text-sm">
+                  <span class="text-xs font-weight-bold"> ${i.quantity} </span>
+                </td>
+                <td class="align-middle text-center text-sm">
+                  <span class="text-xs font-weight-bold"> ${i.per_price} </span>
+                </td>
+                </tr>`)
+              })
+          },
+          error: function(xhr, status, error) {
+              alert('Error: ' + error);
+          }
+      });
+  }
+  function closeModal() {
+    $('#orderModal').modal('hide');
+    $('#table-body').html('')
+  }
+</script>
+
+{% endblock extrascript %}
+
+</body>
+</html>

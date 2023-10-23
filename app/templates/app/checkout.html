@@ -1,0 +1,261 @@
+{% extends 'app/base.html' %}
+{% load static %}
+{% load custom_filters %}
+{% block title %}
+	Checkout
+{% endblock title %}
+
+{% block main-content %}
+<!-- Modal -->
+<!-- Modal -->
+<div id="myModal" class="modal">
+	<div class="modal-content">
+	  <div class="modal-header">
+		<h5 class="modal-title">Terms & Conditions</h5>
+		<button type="button" class="close btn btn-dark btn-link btn-icon-right btn-close" onclick="closeModal()">&times;</button>
+	  </div>
+	  <div class="modal-body">
+		<p> {{ terms_and_conditions.description|safe }} </p>
+	  </div>
+	  <div class="modal-footer">
+		<!-- <button type="button" class="btn btn-secondary" onclick="closeModal()">Close</button>
+		<button type="button" class="btn btn-primary">Save changes</button> -->
+	  </div>
+	</div>
+  </div>
+  
+<main class="main checkout">
+	{% if cart %}	  
+	<div class="page-content pt-7 pb-10 mb-10">
+		<div class="step-by pr-4 pl-4">
+			<h3 class="title title-simple title-step"><a href="{% url 'show-cart' %}">1. Shopping Cart</a></h3>
+			<h3 class="title title-simple title-step active"><a href="{% url 'checkout' %}">2. Checkout</a></h3>
+			<h3 class="title title-simple title-step"><a href="#">3. Order Complete</a></h3>
+		</div>
+		<div class="container mt-7">
+			<div class="card accordion">
+				<div class="alert alert-light alert-primary alert-icon mb-4 card-header">
+					<i class="fas fa-exclamation-circle"></i>
+					<span class="text-body">Have a coupon?</span>
+					<a href="#alert-body2" class="text-primary">Click here to enter your code</a>
+				</div>
+				<section id="for-coupon-error"></section>
+				<div class="alert-body collapsed" id="alert-body2">
+					<p>If you have a coupon code, please apply it below.</p>
+					<div class="check-coupon-box d-flex">
+						<form action="{% url 'coupon-form' %}" method="POST" id="coupon-form" enctype="multipart/form-data">
+							{% csrf_token %}
+							<input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+							<input type="hidden" name="cart_id" value="{{ carts.id }}">
+							<input type="text" name="coupon_code"
+							class="input-text form-control ls-m mb-4" id="coupon_code" 
+							placeholder="Enter coupon code here...">
+							<button type="submit" class="btn btn-md btn-dark btn-rounded btn-outline mb-5"  id="coupon-btn" >Apply Coupon</button>
+						</form>
+					</div>
+				</div>
+			</div>
+			<form action="" method="POST" class="form" novalidate>
+				{% csrf_token %}
+				<div class="row">
+					<div class="col-lg-7 mb-6 mb-lg-0 pr-lg-4">
+						<h3 class="title title-simple text-left text-uppercase">Billing Details</h3>
+						<div class="row">
+							<div class="col-xs-6">
+								{% if form.first_name.errors %}
+								<ul class="errorlist">
+									{% for error in form.first_name.errors %}
+									<li class="text-danger">{{ error }}</li>
+									{% endfor %}
+								</ul>
+								{% endif %}
+								<label>{{form.first_name.label}}</label>
+								{{form.first_name}}
+
+							</div>
+							<div class="col-xs-6">
+								{% if form.last_name.errors %}
+								<ul class="errorlist">
+									{% for error in form.last_name.errors %}
+									<li class="text-danger">{{ error }}</li>
+									{% endfor %}
+								</ul>
+								{% endif %}
+								<label>{{form.last_name.label}}</label>
+								{{form.last_name}}
+							</div>
+						</div>
+						{% if form.address.errors %}
+						<ul class="errorlist">
+							{% for error in form.address.errors %}
+							<li class="text-danger">{{ error }}</li>
+							{% endfor %}
+						</ul>
+						{% endif %}
+						<label>{{form.address.label}}</label>
+						{{form.address}}
+						<div class="row">
+							<div class="col-xs-6">
+								{% if form.city.errors %}
+								<ul class="errorlist">
+									{% for error in form.city.errors %}
+									<li class="text-danger">{{ error }}</li>
+									{% endfor %}
+								</ul>
+								{% endif %}
+								<label>{{form.city.label}}</label>
+								{{form.city}}
+							</div>
+							<div class="col-xs-6">
+								{% if form.area.errors %}
+								<ul class="errorlist">
+									{% for error in form.area.errors %}
+									<li class="text-danger">{{ error }}</li>
+									{% endfor %}
+								</ul>
+								{% endif %}
+								<label>{{form.area.label}}</label>
+								{{form.area}}
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-xs-6">
+								{% if form.zipcode.errors %}
+								<ul class="errorlist">
+									{% for error in form.zipcode.errors %}
+									<li class="text-danger">{{ error }}</li>
+									{% endfor %}
+								</ul>
+								{% endif %}
+								<label>{{form.zipcode.label}}</label>
+								{{form.zipcode}}
+							</div>
+							<div class="col-xs-6">
+								{% if form.phone.errors %}
+								<ul class="errorlist">
+									{% for error in form.phone.errors %}
+									<li class="text-danger">{{ error }}</li>
+									{% endfor %}
+								</ul>
+								{% endif %}
+								<label>{{form.phone.label}}</label>
+								{{form.phone}}
+							</div>
+						</div>
+						{% if form.email.errors %}
+						<ul class="errorlist">
+							{% for error in form.email.errors %}
+							<li class="text-danger">{{ error }}</li>
+							{% endfor %}
+						</ul>
+						{% endif %}
+						<label>{{form.email.label}}</label>
+						{{form.email}}
+
+						<h2 class="title title-simple text-uppercase text-left">Additional Information</h2>
+						<label for="notes">Order Notes (Optional)</label>
+						<textarea class="form-control pb-2 pt-2 mb-0" cols="30" rows="5"
+							placeholder="Notes about your order, e.g. special notes for delivery" id="notes" name="notes"></textarea>
+					</div>
+					<aside class="col-lg-5 sticky-sidebar-wrapper">
+						<div class="sticky-sidebar mt-1" data-sticky-options="{'bottom': 50}">
+							<div class="summary pt-5">
+								<h3 class="title title-simple text-left text-uppercase">Your Order</h3>
+								<table class="order-table">
+									<thead>
+										<tr>
+											<th>Product</th>
+											<th></th>
+										</tr>
+									</thead>
+									<tbody id="cart-table">
+										{% if cart.coupon %}
+										<tr class="summary-subtotal">
+											<td>
+												<h4 class="summary-subtitle">Coupon Discount</h4>
+											</td>
+											<td>
+												<p class="summary-subtotal-price Subtotal">Rs.{{cart.coupon_discount|format_price}}</p>
+											</td>												
+										</tr>
+										{% endif %}
+										{% for item in cart.cartitem_set.all %}
+										<tr>
+											<td class="product-name" style="line-height: normal; font-weight: 400;">{{item.product.title}} {% if item.variant %} - {{item.variant.attributes.value}} {% endif %} 
+												<span class="product-quantity" style="font-weight: 600;" >×&nbsp;{{item.quantity}}</span></td>
+											<td class="product-total text-body" style="font-weight: 600;">Rs {{item.per_price|format_price}}</td>
+										</tr>
+										{% endfor %}
+
+										<tr class="summary-subtotal">
+											<td>
+												<h4 class="summary-subtitle">Subtotal</h4>
+											</td>
+											<td class="summary-subtotal-price pb-0 pt-0" id="c-amount">Rs {{amount|format_price}}
+											</td>
+										</tr>
+										<tr class="summary-subtotal">
+											<td>
+												<h4 class="summary-subtitle">Shipping</h4>
+											</td>
+											<td class="summary-subtotal-price pb-0 pt-0 Subtotal" style="width: 100px;">{{shipping|format_price}}
+											</td>
+										</tr>
+										<tr class="summary-total">
+											<td class="pb-0">
+												<h4 class="summary-subtitle">Total</h4>
+											</td>
+											<td class=" pt-0 pb-0">
+												<p class="summary-total-price ls-s text-primary totalAmount" id="c-total" style="width: max-content;">Rs {{totalAmount|format_price}}</p>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+								<div class="payment accordion radio-type">
+									<h4 class="summary-subtitle ls-m pb-3">Payment Methods</h4>
+									<div class="card">
+										<div class="card-header">
+											<a href="#collapse1" class="collapse text-body text-normal ls-m" style="font-size: medium; font-weight: 500;">Cash On Delivery </a>
+										</div>
+										<div id="collapse1" class="expanded" style="display: block;">
+											<div class="card-body ls-m">
+												Are you willing to miss up to 10% discount on online payment?
+											</div>
+										</div>
+									</div>
+									<div class="card">
+										<div class="card-header">
+											<a href="#collapse2" class="expand text-body text-normal ls-m" style="font-size: medium; font-weight: 500;">Manual Bank Transfer</a>
+										</div>
+										<div id="collapse2" class="collapsed">
+											<div class="card-body ls-m">
+												Upto 10% discount on online payment.
+											</div>
+										</div>
+									</div>
+								</div>
+								{% if terms_and_conditions %}
+								  
+								<div class="form-checkbox mt-4 mb-5">
+						
+								</div>
+								{% endif %}
+								<button type="submit" class="btn btn-dark btn-rounded btn-order" id="btn-order">Place
+									Order</button>
+							</div>
+						</div>
+					</aside>
+				</div>
+				<input type="hidden" name="payment-method-input" id="payment-method-input" value="Cash On Delivery" >
+			</form>
+		</div>
+	</div>
+
+	{% else %}
+
+	<h5 class="text-center text-danger mt-5 mb-4">Checkout is not available whilst your cart is empty.</h5>
+
+	{% endif %}
+
+</main>
+{% endblock main-content %}

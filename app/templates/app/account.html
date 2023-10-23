@@ -1,0 +1,131 @@
+{% extends 'app/base.html' %}
+{% load static %}
+{% block main-content %}
+<main class="main account">
+    <nav class="breadcrumb-nav">
+        <div class="container">
+            <ul class="breadcrumb">
+                <li><a href="/"><i class="d-icon-home"></i></a></li>
+                <li>Account</li>
+            </ul>
+        </div>
+    </nav>
+    <div class="page-content mt-4 mb-10 pb-6">
+        <div class="container">
+            <h2 class="title title-center mb-10">My Account</h2>
+            <div class="tab tab-vertical gutter-lg">
+                <ul class="nav nav-tabs mb-4 col-lg-3 col-md-4" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#dashboard" id="dashboard-tab-link">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#orders" id="orders-tab-link">Orders</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#address">Address</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#account">Change Password</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{% url 'logout' %}">Logout</a>
+                    </li>
+                </ul>
+                <div class="tab-content col-lg-9 col-md-8">
+                    <div class="tab-pane active" id="dashboard">
+                        <p class="mb-0">
+                            Hello <span>{% if request.user.is_authenticated %} {{request.user}} {% else %} User </span>
+                            (not <span>User</span>? <a href="{% url 'login' %}" class="text-primary">Log
+                                In</a>) {% endif %}
+                        </p>
+                        <p class="mb-8">
+                            From your account dashboard you can view your <a href="#orders"
+                                class="link-to-tab text-primary">recent orders</a>, manage your shipping and billing
+                            addresses,<br>and edit your password and account details</a>.
+                        </p>
+                        <a href="{% url 'shop' 'None' 'all' %}" class="btn btn-dark btn-rounded">Go To Shop<i
+                                class="d-icon-arrow-right"></i></a>
+                    </div>
+                    <div class="tab-pane" id="orders">
+                        <table class="order-table">
+                            <thead>
+                                <tr>
+                                    <th class="pl-2">Order</th>
+                                    <th>Date</th>
+                                    <th>Status</th>
+                                    <th>Total</th>
+                                    <th class="pr-2">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for order in orders %}
+                                <tr>
+                                    <td class="order-number"><a href="#">#{{order.id}}</a></td>
+                                    <td class="order-date"><time>{{order.ordered_date}}</time></td>
+                                    <td class="order-status"><span>{{order.status}}</span></td>
+                                    <td class="order-total"><span>Rs {{order.per_price}} for {{order.quantity}}
+                                            items</span></td>
+                                    <td class="order-action"><a href="#"
+                                            class="btn btn-primary btn-link btn-underline">View</a></td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="tab-pane" id="downloads">
+                        <p class="mb-4 text-body">No downloads available yet.</p>
+                        <a href="#" class="btn btn-primary btn-link btn-underline">Browser Products<i
+                                class="d-icon-arrow-right"></i></a>
+                    </div>
+                    <div class="tab-pane" id="address">
+                        <p class="mb-2">The following addresses will be used on the checkout page by your choice.
+                        </p>
+                        <div class="row">
+                            <div class="col-sm-6 mb-4">
+                                {% for address in addresses %}
+                                <div class="card card-address">
+                                    <div class="card-body">
+                                        <h5 class="card-title text-uppercase">Billing Address {{forloop.counter}}</h5>
+                                        <p>{{address.first_name}} {{address.last_name}} <br>
+                                            {{address.locality}} <br>
+                                        {{address.area}} , {{address.city}} {{address.zipcode}} <br>
+                                        {{address.phone}} <br>
+                                        {{address.email}} 
+                                        </p>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="account">
+                        <form id="password_change_form" action="{% url 'account' %}" method="POST">
+                            <span id="change_password_success" class="text-danger"></span>
+                            {% csrf_token %}
+                            <span id="form2_err"></span>
+                            <div class="form-group">
+                                <label for="id_old_password">Current Password:</label>
+                                <input type="password" name="old_password" class="form-control" id="id_old_password">
+                                <span id="old_password_err" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label for="id_new_password1">New Password:</label>
+                                <input type="password" name="new_password1" class="form-control" id="id_new_password1">
+                                <span id="new_password1_err" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label for="id_new_password2">Confirm Password:</label>
+                                <input type="password" name="new_password2" class="form-control" id="id_new_password2">
+                                <span id="new_password2_err" class="text-danger"></span>
+                            </div>
+                            <button type="submit" class="btn btn-primary passwordbtn">Change Password</button>
+                        </form>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+<!-- End Main -->
+{% endblock main-content %}

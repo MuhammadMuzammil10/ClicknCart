@@ -1,0 +1,27 @@
+{% extends 'app/base.html' %}
+{% load static %}
+{% block title %}
+Brands
+{% endblock title %}
+
+{% block main-content %}
+<main>
+	<div class="page-content mb-10 mt-10 pb-6">
+		<div class="container">
+			<div class="row">
+				{% for brand in brands %}				  
+				<div class="col-xl-3 col-lg-4 col-6 mb-4">
+					<div class="category category-light category-absolute">
+						<a href="{{brand.brand_url}}">
+							<figure class="category-media">
+								<img src="{{brand.brand_logo.url}}" width="300" height="338" alt="category" />
+							</figure>
+						</a>
+					</div>
+				</div>
+				{% endfor %}
+			</div>
+		</div>
+	</div>
+</main>
+{% endblock main-content %}

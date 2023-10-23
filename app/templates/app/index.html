@@ -1,0 +1,254 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+{% load static %}
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>Email Template for Order Confirmation Email</title>
+        
+        <!-- Start Common CSS -->
+        <style type="text/css">
+            #outlook a {padding:0;}
+            body{width:100% !important; -webkit-text-size-adjust:100%; -ms-text-size-adjust:100%; margin:0; padding:0; font-family: Helvetica, arial, sans-serif;}
+            .ExternalClass {width:100%;}
+            .ExternalClass, .ExternalClass p, .ExternalClass span, .ExternalClass font, .ExternalClass td, .ExternalClass div {line-height: 100%;}
+            .backgroundTable {margin:0; padding:0; width:100% !important; line-height: 100% !important;}
+            .main-temp table { border-collapse:collapse; font-family: Helvetica, arial, sans-serif;}
+            .main-temp table td {border-collapse: collapse;}
+            table.invoice-table {
+                width: 100%;
+                border-collapse: collapse;
+                font-family: Arial, sans-serif;
+                color: #333;
+                margin-bottom: 20px;
+              }
+          
+              table.invoice-table th,
+              table.invoice-table td {
+                padding: 10px;
+                border: 1px solid #ddd;
+              }
+          
+              table.invoice-table .invoice-header {
+                background-color: #f5f5f5;
+                text-align: center;
+              }
+          
+              table.invoice-table .invoice-header img.invoice-logo {
+                width: 150px;
+              }
+          
+              table.invoice-table .invoice-header .invoice-title {
+                font-size: 2em;
+                margin-top: 10px;
+                font-weight: bold;
+              }
+          
+              table.invoice-table .invoice-info {
+                margin-top: 20px;
+              }
+          
+              table.invoice-table .invoice-info .invoice-label {
+                font-weight: bold;
+              }
+          
+              table.invoice-table .invoice-total {
+                background-color: #f5f5f5;
+                font-weight: bold;
+                text-align: right;
+              }
+              tm_table_responsive > table {
+                min-width: 600px;
+            }
+            
+            table {
+                width: 100%;
+                caption-side: bottom;
+                border-collapse: collapse;
+            }
+        </style>
+        <!-- End Common CSS -->
+    </head>
+    <body>
+        <table width="100%" cellpadding="0" cellspacing="0" border="0" class="backgroundTable main-temp" style="background-color: #d5d5d5;">
+            <tbody>
+                <tr>
+                    <td>
+                        <table width="600" align="center" cellpadding="15" cellspacing="0" border="0" class="devicewidth" style="background-color: #ffffff;">
+                            <tbody>
+                                <!-- Start header Section -->
+                                <tr>
+                                    <td style="padding-top: 30px;">
+                                        <table width="560" align="center" cellpadding="0" cellspacing="0" border="0" class="devicewidthinner" style="border-bottom: 1px solid #eeeeee; text-align: center;">
+                                            <tbody>
+                                                <tr>
+                                                    <td style="padding-bottom: 10px;">
+                                                        <h1>Shopzy Store</h1>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="font-size: 14px; line-height: 18px; color: #666666;">
+                                                        123 Street Name
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="font-size: 14px; line-height: 18px; color: #666666;">
+                                                        City, California, 90017
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="font-size: 14px; line-height: 18px; color: #666666;">
+                                                        PHONE: Toll Free (123) 456-7890 | Email: mail@shopzy.com
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="font-size: 14px; line-height: 18px; color: #666666; padding-bottom: 25px;">
+                                                        <strong>Order Number:</strong> {{first_order.id}} | <strong>Order Date:</strong> {{first_order.ordered_date}}
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <!-- End header Section -->
+                                
+                                <!-- Start address Section -->
+                                <tr>
+                                    <td style="padding-top: 0;">
+                                        <table width="560" align="center" cellpadding="0" cellspacing="0" border="0" class="devicewidthinner" style="border-bottom: 1px solid #bbbbbb;">
+                                            <tbody>
+                                                <tr>
+                                                    <td style="width: 45%; font-size: 16px; font-weight: bold; color: #666666; padding-bottom: 5px;">
+                                                        Billing Address
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="width: 45%; font-size: 14px; line-height: 18px; color: #666666;">
+                                                        <p>
+                                                            {{first_order.customer.first_name}} {{first_order.customer.last_name}} <br>
+                                                            {{first_order.customer.locality}} <br>{{first_order.customer.phone}}<br>
+                                                            {{first_order.customer.email}}
+                                                          </p>
+                                                    </td>
+                                                </tr>
+                                                
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <!-- End address Section -->
+                                
+                                <!-- Start product Section -->
+                                <table class="invoice-table">
+                                    <thead aria-colspan="2">
+                                      <tr class="invoice-info">
+                                        <th class="tm_width_3 tm_semi_bold tm_primary_color invoice-header">Item</th>
+                                        <th class="tm_width_4 tm_semi_bold tm_primary_color tm_border_left invoice-header">Description
+                                        </th>
+                                        <th class="tm_width_2 tm_semi_bold tm_primary_color tm_border_left invoice-header">Price</th>
+                                        <th class="tm_width_1 tm_semi_bold tm_primary_color tm_border_left invoice-header">Qty</th>
+                                        <th class="tm_width_2 tm_semi_bold tm_primary_color tm_border_left tm_text_right invoice-header">
+                                          Total</th>
+                                      </tr>
+                                    </thead>
+                                    <tbody>
+                                      {% if orders %}
+                                      {% for order in orders %}
+                                      <tr>
+                                        <td class="tm_width_3">{{forloop.counter}}. {{order.product.title}}</td>
+                                        <td class="tm_width_4 tm_border_left">{{order.product.description}}</td>
+                                        <td class="tm_width_2 tm_border_left">Rs {{order.product.discounted_price}}</td>
+                                        <td class="tm_width_1 tm_border_left">{{order.quantity}}</td>
+                                        <td class="tm_width_2 tm_border_left tm_text_right">Rs {{order.per_price}}</td>
+                                      </tr>
+                                      {% endfor %}
+                                      {% endif %}
+                                    </tbody>
+                                  </table>
+                                <!-- End product Section -->
+                                
+                                <!-- Start calculation Section -->
+                                <tr>
+                                    <td style="padding-top: 0;">
+                                        <table width="560" align="center" cellpadding="0" cellspacing="0" border="0" class="devicewidthinner" style="border-bottom: 1px solid #bbbbbb; margin-top: -5px;">
+                                            <tbody>
+                                                <tr>
+                                                    <td rowspan="5" style="width: 55%;"></td>
+                                                    <td style="font-size: 14px; line-height: 18px; color: #666666;">
+                                                        Sub-Total:
+                                                    </td>
+                                                    <td style="font-size: 14px; line-height: 18px; color: #666666; width: 130px; text-align: right;">
+                                                        Rs {{amount}}
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="font-size: 14px; line-height: 18px; color: #666666; padding-bottom: 10px; border-bottom: 1px solid #eeeeee;">
+                                                        Shipping Fee:
+                                                    </td>
+                                                    <td style="font-size: 14px; line-height: 18px; color: #666666; padding-bottom: 10px; border-bottom: 1px solid #eeeeee; text-align: right;">
+                                                        Rs 200
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="font-size: 14px; font-weight: bold; line-height: 18px; color: #666666; padding-top: 10px;">
+                                                        Order Total
+                                                    </td>
+                                                    <td style="font-size: 14px; font-weight: bold; line-height: 18px; color: #666666; padding-top: 10px; text-align: right;">
+                                                        Rs {{first_order.total_amount}}
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="font-size: 14px; font-weight: bold; line-height: 18px; color: #666666;">
+                                                        Payment Term:
+                                                    </td>
+                                                    <td style="font-size: 14px; font-weight: bold; line-height: 18px; color: #666666; text-align: right;">
+                                                        100%
+                                                    </td>
+                                                </tr>
+                                                
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <!-- End calculation Section -->
+                                
+                                <!-- Start payment method Section -->
+                                <tr>
+                                    <td style="padding: 0 10px;">
+                                        <table width="560" align="center" cellpadding="0" cellspacing="0" border="0" class="devicewidthinner">
+                                            <tbody>
+                                                <tr>
+                                                    <td colspan="2" style="font-size: 16px; font-weight: bold; color: #666666; padding-bottom: 5px;">
+                                                        Payment Method (Cash on Delivery)
+                                                    </td>
+                                                </tr>
+                                    
+                                                <tr>
+                                                    <td style="width: 55%; font-size: 14px; line-height: 18px; color: #666666;">
+                                                        Thanks for using shopzy store!
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="width: 55%; font-size: 14px; line-height: 18px; color: #666666;">
+                                                    Terms and conditions <br>
+                                                        Delivery dates are not guaranteed and Seller has no liability for damages that may be incurred due to any delay in shipment of goods hereunder. Taxes are excluded unless otherwise stated.
+                                                    </td>
+                                                </tr>
+                                               
+                                                <tr>
+                                                    <td colspan="2" style="width: 100%; text-align: center; font-style: italic; font-size: 13px; font-weight: 600; color: #666666; padding: 15px 0; border-top: 1px solid #eeeeee;">
+                                                        <b style="font-size: 14px;">NOTE:</b> This is computer generated receipt and does not require physical signature.
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <!-- End payment method Section -->
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </body>
+</html>

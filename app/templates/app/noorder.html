@@ -1,0 +1,23 @@
+{% extends 'app/base.html' %}
+{% load static %}
+{% block main-content %}
+<main>
+    <div class="page-content">
+        <section class="mt-10 pt-8">
+            <div class="container">
+                <div class="alert alert-light alert-danger alert-icon alert-inline mb-4">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <h4 class="alert-title">No Order Found!</h4>
+                    <button type="button" class="btn btn-link btn-close">
+                        <i class="d-icon-times"></i>
+                    </button>
+                </div>
+                
+                <figure  style="display: flex; justify-content: center;">
+                    <img src="/static/app/images/noorder.jpg" width="451" height="266" alt="empty-cart" />
+                </figure>
+            </div>
+        </section>
+    </div>
+</main>
+{% endblock main-content %}

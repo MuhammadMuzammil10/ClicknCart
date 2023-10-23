@@ -1,0 +1,131 @@
+{% extends "layouts/base.html" %}
+{% load i18n static %}
+
+{% block title %} Home {% endblock title %}
+
+{% block content %}
+
+<div class="container-fluid py-4">
+    <div class="row my-4">
+        <div class="col-lg-9 col-md-6 mb-md-0 mb-4">
+            <div class="card">
+                <div class="card-header pb-0">
+                    <div class="row">
+                        <div class="col-lg-6 col-7">
+                            <h6>Products Sale Report</h6>
+                        </div>
+                        <div class="col-lg-6 col-5 my-auto text-end">
+                            <div class="dropdown float-lg-end pe-4">
+                                <a class="cursor-pointer" id="dropdownTable" data-bs-toggle="dropdown"
+                                    aria-expanded="false">
+                                    <i class="fa fa-ellipsis-v text-secondary"></i>
+                                </a>
+                                <ul class="dropdown-menu px-2 py-3 ms-sm-n4 ms-n5" aria-labelledby="dropdownTable">
+                                    <li><a class="dropdown-item border-radius-md" href="javascript:;">Action</a></li>
+                                    <li><a class="dropdown-item border-radius-md" href="javascript:;">Another action</a>
+                                    </li>
+                                    <li><a class="dropdown-item border-radius-md" href="javascript:;">Something else
+                                            here</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body px-0 pb-2">
+                    <div class="table-responsive">
+                        <table class="table align-items-center mb-0">
+                            <thead>
+                                <tr>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                        Product</th>
+                                    <th
+                                        class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                                        Quantity</th>
+                                    <th
+                                        class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                        Total</th>
+                                </tr>
+                            </thead>
+                            <tbody id="purschase-report-table">
+                                {% for item in sales_data %}
+                                <tr>
+                                    <td>
+                                        <div class="d-flex px-2 py-1">
+                                            <div>
+                                                <img src="{{item.product.main_picture.url}}"
+                                                    class="avatar avatar-sm me-3" alt="xd">
+                                            </div>
+                                            <div class="d-flex flex-column justify-content-center">
+                                                <h6 class="mb-0 text-sm">{{item.product.title|truncatechars:50}}</h6>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="avatar-group mt-2">
+                                            <span class="text-xs font-weight-bold"> {{item.quantity_sold}} </span>
+                                        </div>
+                                    </td>
+                                    <td class="align-middle text-center text-sm">
+                                        <span class="text-xs font-weight-bold"> Rs {{item.total_sales}} </span>
+                                    </td>
+
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6">
+            <div class="card">
+                <div class="card-header"><i class="fas fa-filter"></i> Filter</div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label for="input-order-status" class="col-form-label">Order Status</label> <select
+                            name="filter_order_status_id" id="input-order-status" class="form-select">
+                            <option value=0 >All Statuses</option>
+                            <option value="Accepted">Accepted</option>
+                            <option value="Complete">Complete</option>
+                            <option value="Pending">Pending</option>
+                            <option value="Packed">Packed</option>
+                            <option value="On The Way">On The Way</option>
+                            <option value="Return">Return</option>
+                            <option value="Deleivered">Deleivered</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="input-date-start" class="col-form-label">Date Start</label>
+                        <div class="input-group">
+                            <input type="text" name="filter_date_start" value="" placeholder="Date Start"
+                                id="input-date-start" class="form-control date datepicker">
+                            
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="input-date-end" class="col-form-label">Date End</label>
+                        <div class="input-group">
+                            <input type="text" name="filter_date_end" value="" placeholder="Date End"
+                                id="input-date-end" class="form-control date datepicker">
+                            
+                        </div>
+                    </div>
+                    <div class="text-end">
+                        <button type="button" id="button-filter-p" class="btn btn-light"><i class="fas fa-filter"></i>
+                            Filter</button>
+                        <button type="button" id="button-filter-p" class="btn btn-light"><i class="fa-solid fa-arrow-rotate-right"></i>
+                            Reset</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="bg-gradient-dark border-radius-lg py-3 pe-1 mb-3">
+        <div class="chart">
+          <canvas id="chart-bars" class="chart-canvas" height="170"></canvas>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

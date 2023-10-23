@@ -1,0 +1,96 @@
+{% extends 'app/base.html' %}
+{% load static %}
+{% load custom_filters %}
+{% block main-content %}
+<main class="main order">
+    <div class="container mt-8">
+        <div class="order-results">
+            <div class="overview-item">
+                <span>Order number:</span>
+                <strong>{{order.id}}</strong>
+            </div>
+            <div class="overview-item">
+                <span>Status:</span>
+                <strong style="color: #4b0082;">{{order.status}}</strong>
+            </div>
+            <div class="overview-item">
+                <span>Date:</span>
+                <strong>{{order.date}}</strong>
+            </div>
+            <div class="overview-item">
+                <span>Email:</span>
+                <strong>{{order.biling_address.email}}</strong>
+            </div>
+            <div class="overview-item">
+                <span>Total:</span>
+                <strong>Rs {{order.total_amount|format_price}}</strong>
+            </div>
+            <div class="overview-item">
+                <span>Payment method:</span>
+                <strong>{{order.payment_method}}</strong>
+            </div>
+        </div>
+
+        <h2 class="title title-simple text-left pt-4 font-weight-bold text-uppercase">Order Details</h2>
+        <div class="order-details">
+            <table class="order-details-table">
+                <thead>
+                    <tr class="summary-subtotal">
+                        <td>
+                            <h3 class="summary-subtitle">Product</h3>
+                        </td>
+                        <td></td>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in order.orderitem_set.all %}
+                    <tr>
+                        <td class="product-name">{{item.product.title}} {% if item.variant %} - {{item.variant.attributes.value}} {% endif %} <span> <i class="fas fa-times"></i>
+                                {{item.quantity}}</span></td>
+                        <td class="product-price">Rs {{item.per_price|format_price}}</td>
+                    </tr>
+                    {% endfor %}
+
+                    <tr class="summary-subtotal">
+                        <td>
+                            <h4 class="summary-subtitle">Subtotal:</h4>
+                        </td>
+                        <td class="summary-subtotal-price">Rs {{order.sub_total|format_price}}</td>
+                    </tr>
+                    <tr class="summary-subtotal">
+                        <td>
+                            <h4 class="summary-subtitle">Shipping:</h4>
+                        </td>
+                        <td class="summary-subtotal-price">{{order.flat_shipping_rate}}</td>
+                    </tr>
+                    <tr class="summary-subtotal">
+                        <td>
+                            <h4 class="summary-subtitle">Payment method:</h4>
+                        </td>
+                        <td class="summary-subtotal-price">{{order.payment_method}}</td>
+                    </tr>
+                    <tr class="summary-subtotal">
+                        <td>
+                            <h4 class="summary-subtitle">Total:</h4>
+                        </td>
+                        <td>
+                            <p class="summary-total-price">Rs {{order.total_amount|format_price}}</p>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <h2 class="title title-simple text-left pt-10 mb-2">Billing Address</h2>
+        <div class="address-info pb-8 mb-6">
+            <p class="address-detail pb-2">
+                {{order.biling_address.first_name}} {{order.biling_address.last_name}}<br>
+                {{order.biling_address.locality}}
+                {{order.biling_address.area}} , {{order.biling_address.city}}
+                {{order.biling_address.zipcode}}<br>
+                {{order.biling_address.phone}}
+            </p>
+            <p class="email">{{order.biling_address.email}}</p>
+        </div>
+    </div>
+</main>
+{% endblock main-content %}

@@ -1,0 +1,42 @@
+{% extends 'app/base.html' %}
+{% load static %}
+{% block main-content %}
+
+<main id="main" class="">
+
+
+    <div class="container">
+        <h1 class="card-title text-uppercase text-center mt-5">Track Your Order</h1>
+        <form action="#" method="POST" class="" novalidate>
+            {% csrf_token %}
+            {% if form.non_field_errors %}
+                {% for error in form.non_field_errors %}
+                    <h6 class="text-danger">{{error}}</h6>
+                {% endfor %}
+            {% endif %}
+            {% if form.order_id.errors %}
+              <h6 class="text-danger ">{{form.order_id.errors|striptags}}</h6>
+            {% endif %}
+            {% if form.Billing_email.errors %}
+              <h6 class="text-danger ">{{form.Billing_email.errors|striptags}}</h6>
+            {% endif %}
+            <p class="ls-s lh-1 mt-15">To track your order please enter your Order ID in the box below and press the "Track" button.
+                This was given to you on your receipt and in the confirmation email you should have received.
+            </p>
+            <div class="row m-10">
+                <div class="col-6 col-md-6">
+                    <label class="text-dark" style="font-weight: 500; font-size: medium;">{{form.order_id.label_tag}}</label>
+                    {{form.order_id}}
+                </div>
+                <div class="col-6 col-md-6">
+                    <label class="text-dark " style="font-weight: 500; font-size: medium;">{{form.Billing_email.label_tag}}</label>
+                    {{form.Billing_email}}
+                </div>
+            </div>
+
+            <button type="submit" class="btn mt-5 mb-5" style="background-color: #26c; color: #fff;" value="Track">Track</button>
+        </form>
+    </div>
+</main>
+
+{% endblock main-content %}
