@@ -44,7 +44,10 @@ def totalCart(request):
         cart = None
         total_quantity = 0
         subtotal = 0
-    pages = Information.objects.filter(status = "Published")
+    try:
+        pages = Information.objects.filter(status = "Published")
+    except Information.DoesNotExist:
+        pages = None
     if request.method == "POST":
         newsLetterform = NewsLetterForm(request.POST)
         if newsLetterform.is_valid():
