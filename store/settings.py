@@ -116,6 +116,9 @@ STORAGES = {
         #   ...your_options_here
         },
     },
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
 }
 
 STATIC_URL = 'static/'
