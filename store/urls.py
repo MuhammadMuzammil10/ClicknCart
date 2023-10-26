@@ -20,8 +20,7 @@ from django.conf.urls.static import static
 from django.conf import settings
 from django.views.generic import RedirectView
 # from django.conf.urls import url
-
-handler404 = 'app.views.handler404'
+from app import views
 
 urlpatterns = [    
     path('admin_soft/', include('admin_soft.urls')),
@@ -32,3 +31,6 @@ urlpatterns = [
 ]+ static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)
 urlpatterns+=staticfiles_urlpatterns()
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+
+handler404 = views.error_404
+handler500 = views.error_500

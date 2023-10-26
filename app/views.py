@@ -1,11 +1,10 @@
-from django.template.loader import get_template
-from django.template.loader import get_template
+from django.template.loader import get_template , render_to_string
 from datetime import date
-from django.template.loader import render_to_string
+from django.template import RequestContext
 from django.core.mail import send_mail
-import json 
+import json , datetime , csv
 from django.db.models.functions import TruncQuarter , TruncMonth , TruncDay , TruncHour
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect 
 from app.forms import LoginForm, Registerationform , MyPasswordChangeForm , TrackOrderForm , NewsLetterForm , CouponForm
 from app.models import Product, Cart, BilingAddress, Order , OrderItem, Product_images , Reviews, TopCategory , Category , Subcategory , Banner , Brand , SubSubcategory , Information , FeaturedOffer , WishList , ProductVariation , ProductAttribute , ProductAttributeValue , Coupon , CartItem , FlashSale , FlashSaleItem
 from django.contrib.auth import login, authenticate , update_session_auth_hash
@@ -19,11 +18,11 @@ from accounts.models import User
 from django.contrib.auth.decorators import login_required 
 from django.utils.decorators import method_decorator
 from django.db.models import Sum , Avg
-import datetime
+
 from .forms import ProductForm , Product_imagesForm
 from django.utils.text import slugify
 from django.utils import timezone
-import csv
+
 from django.urls import reverse
 # from .decorators import custom_login_required
 
@@ -1196,3 +1195,13 @@ def check_flashsale(request):
         print('flashsale not exist')
         None
     return render(request , 'app/404.html')   
+
+
+def error_404(request , exception):
+        print("error_404")
+        return render(request,'app/404.html', context={'status': 404} )
+
+def error_500(request):
+        print("error_500")
+        return render(request,'app/404.html',context={'status': 500})
+    

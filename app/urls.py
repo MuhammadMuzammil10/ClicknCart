@@ -5,6 +5,7 @@ from app import views
 from app.admin import OrderModelAdmin
 from app.forms import MyPasswordReset , MySetPasswordForm
 
+
 urlpatterns = [
     path('accounts/', include('django.contrib.auth.urls')),
     path('', views.base,name='/'),
