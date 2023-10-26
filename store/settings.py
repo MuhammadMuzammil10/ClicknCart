@@ -9,9 +9,8 @@ https://docs.djangoproject.com/en/4.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
-import os
+import os , cloudinary_storage
 from pathlib import Path
-
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -54,6 +53,8 @@ INSTALLED_APPS = [
     'app',
     'accounts',
     'django.contrib.humanize',
+    'cloudinary',
+    'cloudinary_storage',
 ]
 
 
@@ -109,28 +110,12 @@ DATABASES = {
     }
 }
 
-STORAGES = {
-    "default": {
-        "BACKEND": "storages.backends.dropbox.DropBoxStorage",
-    },
-    "staticfiles": {
-        "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
-    },
-}
-
 STATIC_URL = 'static/'
 STATICFILES_DIRS = os.path.join(BASE_DIR, 'app\static'),
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles_build', 'static')
 
 MEDIA_URL = 'media/'
-# MEDIA_ROOT = BASE_DIR / 'media'
-# MEDIA_ROOT = os.path.join(BASE_DIR, 'staticfiles_build', 'media')
-
-# DEFAULT_FILE_STORAGE = "storages.backends.dropbox.DropBoxStorage"
-DROPBOX_ACCESS_TOKEN = "sl.Bod58T6crRu-JRkg_WVo-ZNvM8cHmu81HDLy3_Wri0iohdKPaiskfN4kVHPyA4cZkx48HP0ZqutDT-pL05ay97idCCS9XMvb-GQt3BTDf2xxAPHUzM7rWVPkMOu0R3sp2d8lzt0CMM8ObZCpzvSv6jk"
-
-DROPBOX_ROOT_PATH = 'media'
-
+MEDIA_ROOT = BASE_DIR / 'media'
 
 WSGI_APPLICATION = 'store.wsgi.application'
 
@@ -192,10 +177,16 @@ LOGOUT_REDIRECT_URL = 'login'
 
 LOGIN_REDIRECT_URL = None
 
+CLOUDINARY_STORAGE ={
+    'CLOUD_NAME' : 'dbp641wj3',
+    'API_KEY' : '195946173653817',
+    'API_SECRET' : 'u1560F9DWQFDKF9qrkGkIxNYUgY',
+}
 
+
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 # Email Config
-
 ACCOUNT_ADAPTER = 'accounts.adapter.CustomAccountAdapter'
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
