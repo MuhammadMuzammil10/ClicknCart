@@ -40,8 +40,8 @@ def base(request):
     except Banner.DoesNotExist:
         banners = None
     try:
-        categories = TopCategory.objects.all()
-    except TopCategory.DoesNotExist:
+        categories = Category.objects.all()
+    except Category.DoesNotExist:
         categories = None
     try:
         flashsale = FlashSale.objects.get(Q(end_time__gt=timezone.now())).flashsaleitem_set.all()
