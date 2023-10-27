@@ -13205,7 +13205,7 @@ aside+div .product-single .product-details {
     }
 
     .header-middle .logo {
-        margin-right: 0
+        margin: auto;
     }
 
     .header-middle .wishlist,

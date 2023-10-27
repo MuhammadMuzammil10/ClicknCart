@@ -47,7 +47,7 @@ def base(request):
         flashsale = FlashSale.objects.get(Q(end_time__gt=timezone.now())).flashsaleitem_set.all()
     except:
         flashsale = None
-    context = {'featured_offer':featured_offer,'bestsellers' : bestsellers , 'banners' : banners,'category' : categories , 'flashsale' : flashsale}
+    context = {'featured_offer':featured_offer,'bestsellers' : bestsellers , 'banners' : banners,'categories' : categories , 'flashsale' : flashsale}
     return render(request, 'app/main.html',context)
 
 def flashSaleShop(request):
@@ -1198,10 +1198,8 @@ def check_flashsale(request):
 
 
 def error_404(request , exception):
-        print("error_404")
         return render(request,'app/404.html', context={'status': 404} )
 
 def error_500(request):
-        print("error_500")
         return render(request,'app/404.html',context={'status': 500})
     

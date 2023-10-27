@@ -96,7 +96,7 @@
         </div>
     </div>
     {% endif %}
-        
+        {% if categories%}          
         <section class="pt-10 mt-7 appear-animate" data-animation-options="{
             'delay': '.3s'
         }">
@@ -123,7 +123,7 @@
                         }
                     }
                 }">
-                {% for category in category  %}
+                {% for category in categories  %}
                 <div class="product text-center">
                     <figure class="product-media">      
                         
@@ -139,6 +139,7 @@
                 </div>
                 {% endfor %}
         </section>
+        {% endif %}
         {% if bestsellers %}          
         <h2 class="title title-center mb-5 pt-2 pb-2 mt-5" style="background-color: #ebe8fc;">Best Sellers</h2>
         <section class="product-wrapper container appear-animate" data-animation-options="{
