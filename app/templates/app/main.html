@@ -126,11 +126,10 @@
                 {% for category in categories  %}
                 <div class="product text-center">
                     <figure class="product-media">      
-                        
                         <div class="category category-default1 category-absolute banner-radius overlay-zoom">
                             <a href="{{category.url}}">
                                 <figure class="category-media">
-                                    <img src="{{category.image.url}}" alt="category"
+                                    <img src="{{category.category_logo.url}}" alt="{{category.category_logo.url}}"
                                     width="280" height="280" style="background-color: #8c8c8d;" />
                                 </figure>
                             </a>
