@@ -432,41 +432,41 @@ function myFun() {
     }
 }
 
+const searchInput = $('#search-input');
+const searchSuggestions = $('#search-suggestions');
 
-
-const searchInput = document.getElementById('search-input');
-const searchSuggestions = document.getElementById('search-suggestions');
-
-searchInput.addEventListener('input', () => {
-    const query = searchInput.value;
+searchInput.on('input', () => {
+    const query = searchInput.val();
     if (!query) {
-        searchSuggestions.innerHTML = '';
+        searchSuggestions.html('');
         return;
     }
 
     // Send an AJAX request to the server
-    const xhr = new XMLHttpRequest();
-    xhr.open('GET', '/search?q=' + encodeURIComponent(query));
-    xhr.onprogress = () => {
-        $('.btn-search').html('<span class="loading-spinner" role="status" aria-hidden="true"></span>')
-        
-    };
-    xhr.onload = () => {
-        $('.btn-search span').remove()
-        $('.btn-search').html('<i class="d-icon-search"></i>')
-        if (xhr.status === 200) {
-            var suggestions = JSON.parse(xhr.responseText);
+    $.ajax({
+        url: '/search?q=' + encodeURIComponent(query),
+        method: 'GET',
+        beforeSend: function() {
+            $('.btn-search').html('<span class="loading-spinner" role="status" aria-hidden="true"></span>');
+        },
+        success: function(data) {
+            $('.btn-search span').remove();
+            $('.btn-search').html('<i class="d-icon-search"></i>');
+            console.log("response ", data);
             // Update the search suggestions
-            searchSuggestions.innerHTML = suggestions.map(s => {
+            searchSuggestions.html(data.map(s => {
                 const re = new RegExp(query, 'gi');
                 const highlighted = s.title.replace(re, '<strong>$&</strong>');
                 return `<div class="autocomplete-suggestion" data-index="1"><img class="search-image" src="${s.img}"><a href="${s.url}"><li>${highlighted}</li></a><span class="search-price">Rs ${s.price}</span></div>`;
-            }).join('');
-
+            }).join(''));
+        },
+        error: function(xhr, status, error) {
+            console.error("Error:", error);
         }
-    };
-    xhr.send();
+    });
 });
+
+
 const searchInput_1 = document.getElementById('search-input-1');
 const searchSuggestions_1 = document.getElementById('search-suggestions-1');
 
