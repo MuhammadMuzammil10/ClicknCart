@@ -6,7 +6,7 @@ class Command(BaseCommand):
     help = 'Import products from a JSON file'
 
     def handle(self, *args, **options):
-        file_name = 'bath_products.json'  # Specify the file name
+        file_name = 'img_product.json'  # Specify the file name
         current_directory = os.path.dirname(os.path.abspath(__file__))
         json_file_path = os.path.join(current_directory, file_name)
         with open(json_file_path, 'r') as file:

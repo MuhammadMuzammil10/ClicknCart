@@ -98,7 +98,7 @@ $(".minus-cart").click(function () {
 })
 
 $(document).on('click', '.addtowishlist', function () {
-    console.log('AddToCart Clicked')
+    console.log('AddTowishlist Clicked')
     prod_id = $(this).attr('pid').toString()
     var $this = $(this); 
     $.ajax({
@@ -176,18 +176,16 @@ $(document).on('click', '.addtocart', function () {
     prod_id = $(this).attr('pid').toString()
     prod_qty = $('#product_qty') ? $('#product_qty').val() : '' 
     var variation_select = $('#variation-select').find(":selected").val() != undefined ? $('#variation-select').find(":selected").val() : 'None';
-    console.log(variation_select , 'variation_select')
-    console.log( prod_qty , 'prod qty')
     var $this = $(this); 
+    $this.attr('disabled', true);
+    $this.html('<span class="loading-spinner" role="status" aria-hidden="true"></span> Add to Cart');
     $.ajax({
         type: "GET",
         url: "/add-to-cart/",
         data: { prod_id: prod_id , prod_qty : prod_qty , variation_select : variation_select },
-        beforeSend: function () {
-            $('.addtocart').attr('disabled', true);
-        },
         success: function (data) {
-            $('.addtocart').attr('disabled', false);
+            $this.attr('disabled', false);
+            $this.html('<i class="d-icon-bag"></i>Add to cart');
             console.log(data.status)
             if (data.status == 'login'){
                 // Redirect the user to the login page
@@ -203,7 +201,7 @@ $(document).on('click', '.addtocart', function () {
                 navcart = $('.cart-dropdown')
                 navcart.addClass('opened')
                 ref = data.data.product[0]
-                $('.addtocart').attr('disabled', false);
+                $('#addtocart').attr('disabled', false);
                 t = document.querySelectorAll('.Subtotal')
                 t.forEach(element => {
                     element.innerText = `Rs: ${data.data.amount}`
@@ -925,55 +923,7 @@ document.addEventListener('DOMContentLoaded', () => {
             paymentMethodInput.value = event.target.innerText
         });
     });
-});
-
-$(document).ready(function () {
-    $('.payment.accordion.radio-type a').click(function (event) {
-        event.preventDefault(); // Prevent default link behavior
-
-        var paymentMethod = $(this).text().trim();
-        //   console.log(paymentMethod)
-
-        // Make an AJAX call to update the total based on the selected payment method
-        $.ajax({
-            url: '/update_total/',
-            type: 'GET',
-            data: { paymentMethod: paymentMethod },
-            dataType: "json",
-            beforeSend: function () {
-                $('#cover-spin').show(0)
-            },
-            success: function (data) {
-                $('#cover-spin').hide(0)
-                discount_div = `<tr class="summary-shipping">
-            <td>
-            <h4 class="summary-subtitle">Fix Discount</h4>
-            </td>
-            <td class="summary-subtotal-price pb-0 pt-0 c-discount">Rs ${data.fix_discount}
-            </td>
-            </tr>`
-                // Update the total element with the new value returned from the server
-                if (data.fix_discount && document.querySelector('.summary-shipping') == null) {
-                    document.querySelector('.summary-total').insertAdjacentHTML('beforebegin', discount_div)
-                } else {
-                    $('.c-discount').innerText = `Rs ${data.fix_discount}`
-                }
-                if (paymentMethod == 'Cash On Delivery') {
-                    // console.log("Cash on delivery2")
-                    if (document.querySelector('.summary-shipping') != null) {
-                        $('.summary-shipping').remove()
-                    }
-                }
-                document.getElementById('c-amount').innerText = `Rs ${data.amount}`
-                document.getElementById('c-total').innerText = `Rs ${data.totalAmount}`
-
-                //   $('#total').text(data);
-            },
-
-        });
-    });
-});
-
+}); 
 
 $(document).ready(function() {
     var hash = window.location.hash; // Get the hash from the URL

@@ -25,6 +25,7 @@ class Command(BaseCommand):
         #     print(product.id , end=" count ")
         #     f_p = Product_images.objects.filter(product = product)
         #     print(f_p.count())
+        pass
         
         
         

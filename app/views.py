@@ -721,12 +721,12 @@ def filter_by_price(request , min_price , max_price ):
 def update_total(request):
     payment_method = request.GET.get('paymentMethod')
     print(payment_method)
-    carts = Cart.objects.filter(user = request.user)
+    cart = Cart.objects.get(cart_id = _cart_id( request))
     if payment_method == 'Cash On Delivery':
-        cart = Cart.calculate_cart_amount_on_cash(carts)
+        cart = Cart.calculate_cart_amount_on_cash(cart)
         data = {'amount':cart['amount'],'totalAmount':cart['total_amount'],'shipping':cart['shipping_amount']}
     else:
-        cart = Cart.Cart_amount_on_credit_card(carts)
+        cart = Cart.Cart_amount_on_credit_card(cart)
         data = {'amount':cart['amount'],'totalAmount':cart['total_amount'],'shipping':cart['shipping_amount'] ,'fix_discount':cart['fix_discount'] }
     return JsonResponse(data)
 

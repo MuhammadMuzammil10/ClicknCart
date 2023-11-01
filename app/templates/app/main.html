@@ -217,7 +217,7 @@
                             
                             {% if not bestseller.out_of_stock %}
                                 {% if bestseller.product_type != '2' %}
-                                    <a class="btn-product-no-modal btn-cart addtocart"  pid="{{bestseller.id}}" title="Add to cart"><i
+                                    <a class="btn-product-no-modal btn-cart addtocart" id="addtocart" pid="{{bestseller.id}}" title="Add to cart"><i
                                     class="d-icon-bag"></i>Add to cart</a>
                                 {% else %}
                                     <a class="btn-product-no-modal btn-cart" href="{{bestseller.get_absolute_url}}" title="Select Option"><i
