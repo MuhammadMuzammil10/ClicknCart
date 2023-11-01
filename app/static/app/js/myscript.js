@@ -121,8 +121,7 @@ $(document).on('click', '.addtowishlist', function () {
                 product = `<div class="product product-cart">
                 <figure class="product-media">
                 <a href="/product-detail/${ref.id}/">
-                    <img src="/media/${ref.main_picture}/" alt="product" width="80"
-                    height="88" />
+                    <img src="${data.data.product_img}" alt="product" width="80" height="88" />
                 </a>
                 <button class="btn btn-link btn-close remove_wishlist" pid="${ref.id}">
                     <i class="fas fa-times"></i><span class="sr-only">Close</span>
@@ -141,7 +140,7 @@ $(document).on('click', '.addtowishlist', function () {
                 <div class="product product-cart">
                 <figure class="product-media">
                 <a href="/product-detail/${ref.id}/">
-                    <img src="/media/${ref.main_picture}/" alt="product" width="80"
+                    <img src="${data.data.product_img}" alt="product" width="80"
                     height="88" />
                 </a>
                 <button class="btn btn-link btn-close remove_wishlist" pid="${ref.id}">
@@ -222,7 +221,7 @@ $(document).on('click', '.addtocart', function () {
                     product = `<div class="product product-cart">
                 <figure class="product-media">
                 <a href="/product-detail/${ref.id}/">
-                    <img src="/media/${ref.main_picture}/" alt="product" width="80"
+                    <img src="${data.data.product_img}" alt="product" width="80"
                     height="88" />
                 </a>
                 <button class="btn btn-link btn-close remove_btn" pid="${ref.id}">
@@ -248,7 +247,7 @@ $(document).on('click', '.addtocart', function () {
                 <div class="product product-cart">
                 <figure class="product-media">
                 <a href="/product-detail/${ref.id}/">
-                    <img src="/media/${ref.main_picture}/" alt="product" width="80"
+                    <img src="${data.data.product_img}" alt="product" width="80"
                     height="88" />
                 </a>
                 <button class="btn btn-link btn-close remove_btn" pid="${ref.id}">

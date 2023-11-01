@@ -55,7 +55,7 @@ class ProductForm(forms.ModelForm):
 
     brand = BrandChoiceField(queryset=Brand.objects.all(), empty_label = '--------')
     category = CategoryChoiceField(queryset=Category.objects.all(), empty_label='--------')
-    subcategory = CategoryChoiceField(queryset=Subcategory.objects.all(), empty_label='--------')
+    subcategory = CategoryChoiceField(queryset=Subcategory.objects.all(), empty_label='--------' , required=False)
     subsubcategory = CategoryChoiceField(queryset=SubSubcategory.objects.all(), empty_label='--------' , required=False)
     
 
@@ -73,6 +73,9 @@ class ProductForm(forms.ModelForm):
         self.fields['category'].widget.attrs['onChange'] = 'filterSubcategories(this.value);'
         self.fields['subcategory'].widget.attrs['onChange'] = 'filterSubSubcategories(this.value);'
         self.fields['product_type'].widget.attrs['onChange'] = 'ShowVariations(this.value);'
+        for field_name, field in self.fields.items():
+            if field.required:
+                field.label_suffix = ' *'
     
     
     def clean(self):

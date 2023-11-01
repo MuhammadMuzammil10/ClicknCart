@@ -22723,3 +22723,8 @@ pre[class*=language-] {
   right: -8px;
   color: white;
 }
+
+.required-field {
+  color: red;
+  margin-left: 5px;
+}

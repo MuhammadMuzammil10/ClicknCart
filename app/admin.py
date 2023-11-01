@@ -24,12 +24,17 @@ class ProductVariationInline(admin.TabularInline):
     model = ProductVariation
     extra = 1
 
+def make_best_seller(modeladmin, request, queryset):
+    queryset.update(show_in_bestseller_slider=True)
+
+make_best_seller.short_description = "Mark selected items as best seller"
+
 @admin.register(Product)
 class ProductModelAdmin(admin.ModelAdmin):
     inlines = [ ProductVariationInline]
     form = ProductForm
-    list_display = ['id','title','discounted_price', 'quantity' ,'category','brand', 'subcategory', 'subsubcategory']
-
+    list_display = ['id','title','discounted_price', 'quantity' ,'category','brand', 'show_in_bestseller_slider' , 'subcategory', 'subsubcategory']
+    actions = [make_best_seller]
     def save_model(self, request, obj, form, change):
         # Save the main Product object first
         obj.save()
@@ -61,14 +66,17 @@ class ProductModelAdmin(admin.ModelAdmin):
 
     def change_view(self, request, object_id=None, form_url='', extra_context=None):
         extra_context = extra_context or {}
-        relatedimages = Product_images.objects.filter(product = object_id)
-        files = request.FILES.getlist('RelatedImages')
-        if request.method == 'POST' and files:
-            if relatedimages:
-                relatedimages.delete()
-        extra_context['imageform'] = Product_imagesForm()
-        extra_context['images'] = Product_images.objects.filter(product = object_id)
-        return super().change_view(request, object_id, form_url, extra_context)
+        try:
+            relatedimages = Product_images.objects.filter(product = object_id)
+            files = request.FILES.getlist('RelatedImages')
+            if request.method == 'POST' and files:
+                if relatedimages:
+                    relatedimages.delete()
+            extra_context['imageform'] = Product_imagesForm()
+            extra_context['images'] = Product_images.objects.filter(product = object_id)
+            return super().change_view(request, object_id, form_url, extra_context)
+        except Product_images.DoesNotExist:
+            pass
     # Override the save_model method to handle saving the related images form
 
 
@@ -81,6 +89,7 @@ class ProductAttributeValueAdmin(admin.ModelAdmin):
 
 
 admin.site.register(ProductVariation)
+admin.site.register(Product_images)
 
 @admin.register(BilingAddress)
 class BilingAddressModelAdmin(admin.ModelAdmin):

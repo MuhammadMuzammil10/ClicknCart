@@ -179,7 +179,7 @@ class Product(models.Model):
     @property
     def discount_perc(self):
         if self.selling_price:
-            return round((self.selling_price - self.discounted_price)/100)
+            return round(100 - (self.discounted_price / self.selling_price * 100))
     
     @property
     def average_rating(self):

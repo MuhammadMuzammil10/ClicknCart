@@ -165,6 +165,7 @@ def product_detail(request, product_url, sku):
     # print(sku , 'sku')
     product = Product.objects.get(Q(SKU_number = sku) & Q(status = "Published") )
     print("original selling price " , product.original_selling_price)
+    print("original discount_perc " , product.discount_perc)
     
     if request.method == "POST":
         rt = request.POST.get('rating') if request.POST.get('rating') != '' else 3
@@ -251,6 +252,7 @@ def add_to_cart(request):
     prod_qty = int(request.GET.get('prod_qty')) if  request.GET.get('prod_qty') else None
     prod_vrnt = request.GET.get('variation_select')
     prod = Product.objects.get(pk = prod_id)
+    print("prod.main_picture.url" ,prod.main_picture.url )
     if prod_vrnt != 'None':
         try:
             attribute_name, attribute_value = prod_vrnt.split(':')
@@ -325,7 +327,7 @@ def add_to_cart(request):
         q = CartItem.objects.get(Q(cart = cart) & Q(product = prod_id ) )
         cart = Cart.objects.get(cart_id = _cart_id(request))
         item = list(Product.objects.filter(pk = prod_id).values())
-        data = {"amount":cart.subtotal,"totalAmount":cart.total,'count':cart.total_quantity,'product':item,'quantity':q.quantity}
+        data = {"amount":cart.subtotal,"totalAmount":cart.total,'count':cart.total_quantity,'product':item,'quantity':q.quantity , 'product_img' : prod.main_picture.url}
         return JsonResponse({'status':'add', "data":data})
     else:
         return JsonResponse({'status' : 'quantity error' , 'error' : 'The requested quantity is not available' })
@@ -353,7 +355,7 @@ def add_to_wishlist(request):
             wish = WishList(user= usr , product = prod)
             wish.save()
         item = list(Product.objects.filter(pk = prod_id).values())
-        data = {'product':item}
+        data = {'product':item , 'product_img' : prod.main_picture.url}
         return JsonResponse({'status':'add', "data":data})
     elif not request.user.is_authenticated:
         print("rendering to login page")
@@ -416,8 +418,7 @@ def delete_cart(request):
     c = CartItem.objects.get( Q(product = prod_id) & Q(cart = cart) )
     c.delete()
     try: 
-        cartitem = CartItem.objects.get(cart = cart)
-        print(cartitem , 'cartitem')
+        cartitem = CartItem.objects.filter(cart = cart)
         cart = Cart.objects.get(cart_id = _cart_id(request))
         cart.update_totals()
         print('yes')
@@ -1202,4 +1203,3 @@ def error_404(request , exception):
 
 def error_500(request):
         return render(request,'app/404.html',context={'status': 500})
-    

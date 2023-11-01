@@ -40,12 +40,6 @@ label {
     
 }
 
-label.required:after {
-    content: " *";
-    color: red;
-    font-weight: bold;
-}
-
 /* RADIO BUTTONS */
 
 form ul.radiolist li {
