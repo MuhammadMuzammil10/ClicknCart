@@ -161,12 +161,7 @@ def coupon_form(request):
             
 
 def product_detail(request, product_url, sku):
-    # print(product_url , ' url')
-    # print(sku , 'sku')
     product = Product.objects.get(Q(SKU_number = sku) & Q(status = "Published") )
-    print("original selling price " , product.original_selling_price)
-    print("original discount_perc " , product.discount_perc)
-    
     if request.method == "POST":
         rt = request.POST.get('rating') if request.POST.get('rating') != '' else 3
         fm = ReviewsForm(request.POST)
@@ -190,7 +185,6 @@ def product_detail(request, product_url, sku):
             variation_dict[attribute_name].append(variation)
         else:
             variation_dict[attribute_name] = [variation]
-
     
     if reviews.exists():
         paginator = Paginator(reviews,2)

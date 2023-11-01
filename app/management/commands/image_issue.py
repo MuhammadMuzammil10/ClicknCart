@@ -16,8 +16,15 @@ class Command(BaseCommand):
         #             print(product_images)
         #     except Product_images.DoesNotExist:
         #         print("does not exist for " , product)
-        product = Product.objects.filter(category__name__iexact = 'nursery')[15:]
         # print(product.delete)
-        print(product.count())
+        # print(product.product_images_set)
+        # product_imgs = Product_images.objects.all()
+        # for product in product_imgs:
+        #     img_product = product.product
+        #     product = Product.objects.get(id = img_product.id)
+        #     print(product.id , end=" count ")
+        #     f_p = Product_images.objects.filter(product = product)
+        #     print(f_p.count())
+        
         
         
