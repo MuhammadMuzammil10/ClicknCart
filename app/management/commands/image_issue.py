@@ -25,7 +25,14 @@ class Command(BaseCommand):
         #     print(product.id , end=" count ")
         #     f_p = Product_images.objects.filter(product = product)
         #     print(f_p.count())
-        pass
-        
+        # pass
+        products = Product.objects.filter(id__range = (174 , 182) )
+        # for product in products:
+            # # print(product.category)
+            # print(product.id)
+        for product in products:
+            product.category = Category.objects.get(name__iexact = 'safety')
+            product.save()
+            print(product.category)
         
         

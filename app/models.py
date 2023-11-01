@@ -205,7 +205,7 @@ class Product(models.Model):
         # slug1 = slug1.replace(' ', '-')
         # slug2 = slug2.replace(' ', '-')
         # construct the URL using the slug and the primary key
-        url = reverse('product_detail', args=[self.url, self.SKU_number])
+        url = reverse('product_detail', args=[self.url])
         return url
     
     @property
