@@ -158,8 +158,6 @@ def product_detail(request, product_url):
         rt = request.POST.get('rating') if request.POST.get('rating') != '' else 3
         fm = ReviewsForm(request.POST)
         if fm.is_valid():
-            # print('form valid')
-            # print(fm.errors)
             nm = fm.cleaned_data['name']
             em = fm.cleaned_data['email']
             cm = fm.cleaned_data['comment']
@@ -241,11 +239,11 @@ def add_to_cart(request):
             variation = ProductVariation.objects.get(Q( attributes=attribute_value ) & Q(product = prod) )
 
             # The 'variation' variable now contains the desired ProductVariation object
-            print(variation , 'variation jo abhi dekh rhy hen')
+            
         except (ValueError, ProductAttribute.DoesNotExist, ProductAttributeValue.DoesNotExist, ProductVariation.DoesNotExist):
             # Handle the case when the variation is not found or there's an error
             # ...
-            print("variation is not found or there's an error")
+            pass
     try:
         cart = Cart.objects.get(cart_id =  _cart_id(request) )
     except Cart.DoesNotExist: 
@@ -275,18 +273,13 @@ def add_to_cart(request):
             except Cart.DoesNotExist:
                 cart = Cart.objects.create(cart_id = _cart_id(request) )
             if prod_qty and prod.quantity is not None and prod_vrnt != 'None' :
-                print('---------- if true')
                 if prod_qty <= prod.quantity:
-                    print('---------- if if true')
                     reg = CartItem(cart = cart ,  product = prod , quantity = prod_qty , variant = variation)
-                    print('product save with variant')
                 else:
-                    print('returning json response')
                     return JsonResponse({'status' : 'quantity error' , 'error' : 'The requested quantity is not available' })
             elif prod_qty and (prod.quantity is None or (prod.quantity is not None and prod.quantity >= prod_qty ) ):
                 reg = CartItem(cart = cart ,  product = prod , quantity = prod_qty)
             else:
-                print('---------- else true')
                 reg = CartItem(cart = cart , product = prod)
             reg.save()
         
@@ -323,11 +316,9 @@ def add_to_wishlist(request):
         data = {'product':item , 'product_img' : prod.main_picture.url}
         return JsonResponse({'status':'add', "data":data})
     elif not request.user.is_authenticated:
-        print("rendering to login page")
         request.session['next']   = (request.META.get('HTTP_REFERER', '/'))
         return JsonResponse({'status' : 'login' , 'redirect_url' : '/login/' })
     else:
-        print("none page")
         return JsonResponse({'status' : 'none' })
 
 def showCart(request):
@@ -349,7 +340,6 @@ def plus_cart(request):
     cart.update_totals()
     if cart.coupon:
         coupon_discount = cart.coupon_discount
-        print(cart.coupon_discount)
     else:
         coupon_discount = None
     data = {'amount':cart.subtotal,'totalAmount':cart.total,"quantity":c.quantity,'per_price':c.per_price,'count':cart.total_quantity,'shipping':cart.shipping_rate , 'coupon_discount' : coupon_discount}
@@ -367,7 +357,6 @@ def minus_cart(request):
         cart.update_totals()
         if cart.coupon:
             coupon_discount = cart.coupon_discount
-            print(cart.coupon_discount)
         else:
             coupon_discount = None
         data = {'amount':cart.subtotal,'totalAmount':cart.total,"quantity":item.quantity,'per_price':item.per_price,'count':cart.total_quantity,'shipping':cart.shipping_rate , 'coupon_discount' : coupon_discount}
@@ -519,7 +508,6 @@ def search(request):
         try:
             data = request.GET['q']
             suggestions = Product.objects.filter(Q(title__icontains = data) & Q(status = "Published"))
-            print(suggestions , 'suggestion')
             suggestions_list = [ {'title' : product.title , 'img' : product.main_picture.url , 'url' : product.get_absolute_url() , 'price' : product.discounted_price } for product in suggestions]
             
             # suggestions_list = ['apple', 'banana', 'orange']  # Example suggestions
@@ -719,7 +707,6 @@ def subsubcategories_view(request):
 def information_detail(request , name):
     title = slugify(name)
     title = title.replace('-' , ' ')
-    print(title , 'title')
     information = Information.objects.get(url = name)
     return render(request , 'app/information.html' , {'information' : information})
 
@@ -957,7 +944,6 @@ def track_order(request):
     
 
 def order_modal(request , id):
-    print(id , 'id')
     try:
         order = Order.objects.get(id = id)
         order_item_data = []

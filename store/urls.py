@@ -26,7 +26,6 @@ urlpatterns = [
     path('admin_soft/', include('admin_soft.urls')),
     path('admin/', admin.site.urls),
     path('',include('app.urls')),
-    re_path(r'^favicon\.ico$',RedirectView.as_view(url='/static/app/images/3.png')),
 ]+ static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)
 urlpatterns+=staticfiles_urlpatterns()
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

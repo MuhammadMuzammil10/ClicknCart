@@ -1,5 +1,5 @@
-from django.urls import path,include
-from django.views.generic import TemplateView
+from django.urls import path,include , re_path
+from django.views.generic import TemplateView , RedirectView
 from django.contrib.auth import views as auth_view 
 from app import views 
 from app.admin import OrderModelAdmin
@@ -7,6 +7,7 @@ from app.forms import MyPasswordReset , MySetPasswordForm
 
 
 urlpatterns = [
+    re_path(r'^favicon\.ico$',RedirectView.as_view(url='/static/app/images/logo.png')),
     path('accounts/', include('django.contrib.auth.urls')),
     path('', views.base,name='/'),
     path('main/', views.base,name='main'),

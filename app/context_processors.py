@@ -17,7 +17,6 @@ def totalCart(request):
         company = None
     try:
         flashsale = FlashSale.objects.get(Q(end_time__gt=timezone.now()))
-        print("Flash Sale in context processor" , flashsale)
     except:
         flashsale = None
     category = Category.objects.all()
@@ -43,7 +42,6 @@ def totalCart(request):
     amounts = list(sales.values_list('total_amount', flat=True))
     try:
         cart = Cart.objects.get(cart_id = request.session.session_key)
-        print(cart , 'cart')
         total_quantity = cart.total_quantity
         subtotal = cart.subtotal
     except Cart.DoesNotExist:
