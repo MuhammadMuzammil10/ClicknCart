@@ -465,38 +465,38 @@ searchInput.on('input', () => {
 });
 
 
-const searchInput_1 = document.getElementById('search-input-1');
-const searchSuggestions_1 = document.getElementById('search-suggestions-1');
+const searchInput_1 = $('#search-input-1');
+const searchSuggestions_1 = $('#search-suggestions-1');
 
-searchInput_1.addEventListener('input', () => {
-    const query = searchInput_1.value;
+searchInput_1.on('input', () => {
+    const query = searchInput_1.val();
     if (!query) {
-        searchSuggestions_1.innerHTML = '';
+        searchSuggestions_1.html('');
         return;
     }
 
     // Send an AJAX request to the server
-    const xhr = new XMLHttpRequest();
-    xhr.open('GET', '/search?q=' + encodeURIComponent(query));
-    xhr.onprogress = () => {
-        $('.btn-search').html('<span class="loading-spinner" role="status" aria-hidden="true"></span>')
-        
-    };
-    xhr.onload = () => {
-        $('.btn-search span').remove()
-        $('.btn-search').html('<i class="d-icon-search"></i>')
-        if (xhr.status === 200) {
-            const suggestions = JSON.parse(xhr.responseText);
+    $.ajax({
+        url: '/search?q=' + encodeURIComponent(query),
+        method: 'GET',
+        beforeSend: function() {
+            $('.btn-search').html('<span class="loading-spinner" role="status" aria-hidden="true"></span>');
+        },
+        success: function(data) {
+            $('.btn-search span').remove();
+            $('.btn-search').html('<i class="d-icon-search"></i>');
+            console.log("response ", data);
             // Update the search suggestions
-            searchSuggestions_1.innerHTML = suggestions.map(s => {
+            searchSuggestions_1.html(data.map(s => {
                 const re = new RegExp(query, 'gi');
                 const highlighted = s.title.replace(re, '<strong>$&</strong>');
                 return `<div class="autocomplete-suggestion" data-index="1"><img class="search-image" src="${s.img}"><a href="${s.url}"><li>${highlighted}</li></a><span class="search-price">Rs ${s.price}</span></div>`;
-            }).join('');
-
+            }).join(''));
+        },
+        error: function(xhr, status, error) {
+            console.error("Error:", error);
         }
-    };
-    xhr.send();
+    });
 });
 
 
