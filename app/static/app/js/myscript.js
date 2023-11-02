@@ -464,7 +464,6 @@ searchInput.on('input', () => {
     });
 });
 
-
 const searchInput_1 = $('#search-input-1');
 const searchSuggestions_1 = $('#search-suggestions-1');
 
@@ -477,8 +476,9 @@ searchInput_1.on('input', () => {
 
     // Send an AJAX request to the server
     $.ajax({
-        url: '/search?q=' + encodeURIComponent(query),
-        method: 'GET',
+        url: '/search/',
+        method: 'GET', // Specify the request method as GET
+        data: { q: query }, // Send the query as a parameter
         beforeSend: function() {
             $('.btn-search').html('<span class="loading-spinner" role="status" aria-hidden="true"></span>');
         },
