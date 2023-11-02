@@ -16,7 +16,7 @@ urlpatterns = [
     path('brand/<slug:brand>/', views.brands_product,name='brand'),
     path('brand/', views.brands_product,{'brand' : None},name='brand'),
     # path('product-detail/<int:id>/', views.product_deta, name='product-detail'),
-    path('product/<str:product_url>/<sku>/', views.product_detail, name='product_detail'),
+    path('product/<str:product_url>/', views.product_detail, name='product_detail'),
     path('subcategories/', views.subcategories_view, name='subcategories_view'),
     path('subsubcategories/', views.subsubcategories_view, name='subsubcategories_view'),
     

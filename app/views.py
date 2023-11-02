@@ -51,15 +51,12 @@ def base(request):
     return render(request, 'app/main.html',context)
 
 def flashSaleShop(request):
-    print('flashsale function')
     flashsale = FlashSale.objects.get(end_time__gt=timezone.now())
     current_time = timezone.now()
     timer = flashsale.end_time - timezone.now()
     timer = datetime.timedelta.total_seconds(timer)
-    print(timer)
     products = Product.objects.filter(flashsaleitem__FlashSale=flashsale)
 
-    print(products, 'flashsale model')
         
     paginator = Paginator(products,12)
     page_number = request.GET.get('page')
@@ -83,7 +80,6 @@ def user_login(request):
     if not request.user.is_authenticated and request.method != 'POST' :
         request.session['next']   = (request.META.get('HTTP_REFERER', '/'))
     if request.method == 'POST':
-        print('user login function after post statement')
         if request.POST.get('form_type') == 'formOne':
                 form1 = LoginForm(request=request, data=request.POST)
                 if form1.is_valid():
@@ -103,7 +99,6 @@ def user_login(request):
                 form = Registerationform()
                 context = {'form': form, 'form1': form1}
         elif request.POST.get('form_type') == 'formTwo':
-                print("POST")
                 form = Registerationform(request.POST, request.FILES)
                 if form.is_valid():
                     form.save()
@@ -140,11 +135,8 @@ def user_register(request):
 def coupon_form(request):
     cart = Cart.objects.get(cart_id = _cart_id( request))
     if request.method == "POST":
-        print('post request')
-        print('request.post' , request.POST.get('coupon_code'))
         coupon_code =  request.POST.get('coupon_code')
         cart_id =  request.POST.get('cart_id')
-        print(coupon_code)
         try:
             coupon = Coupon.objects.get( Q(coupon_code = coupon_code) & Q( coupon_expire_date__lte = datetime.datetime.now()  ) )
             try:
@@ -160,8 +152,8 @@ def coupon_form(request):
             return JsonResponse({'status': 'not-exist'})
             
 
-def product_detail(request, product_url, sku):
-    product = Product.objects.get(Q(SKU_number = sku) & Q(status = "Published") )
+def product_detail(request, product_url):
+    product = Product.objects.get(Q(url = product_url) & Q(status = "Published") )
     if request.method == "POST":
         rt = request.POST.get('rating') if request.POST.get('rating') != '' else 3
         fm = ReviewsForm(request.POST)
@@ -199,36 +191,25 @@ def product_detail(request, product_url, sku):
 
 
 def shop(request, category = None, subcategory = None , subsubcategory = None):
-    print(category)
-    print(subcategory)
-    print(subsubcategory)
     if subsubcategory:
-        print('subsubcategory')
         subsubcategory = slugify(subsubcategory)
         subsubcategory = subsubcategory.replace('-' , ' ')
         products = Product.objects.filter(Q(subsubcategory__name__iexact = subsubcategory) & Q(status = "Published"))       
     elif subcategory:
         subcategory = slugify(subcategory)
         subcategory = subcategory.replace('-' , ' ')
-        print('subcategory')
         products = Product.objects.filter(Q(subcategory__name__iexact = subcategory) & Q(status = "Published"))       
     elif category:
-        print('category')
         category = slugify(category)
         category = category.replace('-' , ' ')
         products = Product.objects.filter(Q(category__name__iexact = category) & Q(status = "Published"))       
     else:
-        print('else')
         products = Product.objects.filter(status = "Published").order_by('?')
-    print(products , 'products')
     paginator = Paginator(products,12)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     min_price = products.aggregate(min_price = Min('discounted_price'))['min_price']
     max_price = products.aggregate(max_price = Max('discounted_price'))['max_price']
-    print(category , type(category))
-    print(subcategory , type(subcategory))
-    print(subsubcategory , type(subsubcategory))
     context = {'products':products,'page_obj':page_obj,'category':category, 'subcategory' : subcategory, 'subsubcategory' : subsubcategory , 'min_price' : min_price , 'max_price' : max_price} 
     return render(request,'app/shop.html',context)
 
@@ -246,7 +227,6 @@ def add_to_cart(request):
     prod_qty = int(request.GET.get('prod_qty')) if  request.GET.get('prod_qty') else None
     prod_vrnt = request.GET.get('variation_select')
     prod = Product.objects.get(pk = prod_id)
-    print("prod.main_picture.url" ,prod.main_picture.url )
     if prod_vrnt != 'None':
         try:
             attribute_name, attribute_value = prod_vrnt.split(':')
@@ -266,35 +246,28 @@ def add_to_cart(request):
             # Handle the case when the variation is not found or there's an error
             # ...
             print("variation is not found or there's an error")
-    print(prod_qty , 'product qty')
     try:
         cart = Cart.objects.get(cart_id =  _cart_id(request) )
     except Cart.DoesNotExist: 
         cart = None
     if (prod.quantity is None or prod.quantity > 0 ):
-        print('adding')
         try:
             item = CartItem.objects.get(Q(cart = cart) & Q(product = prod) )
-            print(item , 'item')
             if prod.quantity is not None:
                 if prod.quantity > 0 and ( prod.quantity > item.quantity) and not prod_qty :
                     item.quantity += 1
-                    print("quantity increased by one")
                     item.save()
                 elif prod_qty and ( prod.quantity > item.quantity ) and ( prod.quantity > prod_qty) :
                     item.quantity += prod_qty
-                    print("quantity increased by choice")
                     item.save()
                 else:
                     return JsonResponse({'status' : 'quantity error' , 'error' : 'The requested quantity is not available' })
             else:
                 if prod_qty:
                     item.quantity += prod_qty
-                    print("quantity increased by choice")
                     item.save()
                 else:
                     item.quantity += 1
-                    print("quantity increased by one")
                     item.save()
         except CartItem.DoesNotExist:
             try:
@@ -332,7 +305,6 @@ def select_variation(request , product_id , variation):
     product = Product.objects.get(id = product_id)
     attribute = ProductAttribute.objects.get()
     attributes = ProductVariation.objects.get( Q(product = product ) & Q(attributes__value = variation) )
-    print( attributes, 'attributes')
     return JsonResponse({'status': 'success' })
 
 def add_to_wishlist(request):
@@ -340,7 +312,6 @@ def add_to_wishlist(request):
     prod_id = request.GET.get('prod_id')
     prod = Product.objects.get(pk = prod_id)
     if request.user.is_authenticated:
-        print('adding')
         try:
             item = WishList.objects.get(Q(user = usr) & Q(product = prod) )
             if item:  
@@ -385,7 +356,6 @@ def plus_cart(request):
     return JsonResponse({"data":data})
 
 def minus_cart(request):
-    print("minus cart function runs")
     cart = Cart.objects.get(cart_id = _cart_id(request))
     prod_id = request.GET.get('prod_id')
     item = CartItem.objects.get(Q(product = prod_id) & Q(cart = cart))
@@ -415,14 +385,11 @@ def delete_cart(request):
         cartitem = CartItem.objects.filter(cart = cart)
         cart = Cart.objects.get(cart_id = _cart_id(request))
         cart.update_totals()
-        print('yes')
         data = {'amount':cart.subtotal,'totalAmount':cart.total,'count':cart.total_quantity,'shipping': cart.shipping_rate}
-        print('cart to last tha delete nahi hua')
         return JsonResponse({"data":data})
     except CartItem.DoesNotExist:
         data = {'amount':0,'totalAmount':0,'count':0,'shipping': 0}
         Cart.objects.get(cart_id = _cart_id(request)).delete()
-        print('cart also delete')
         return JsonResponse({"data":data , 'status' : 'Empty Cart'})
 
         
@@ -474,14 +441,12 @@ def category(request,name):
         print("Failed to send email")
 
 def checkout(request):
-    print(request.POST , 'request post data')
     new_object_id = None
     try:
         terms_and_conditions = Information.objects.get( url = 'terms-and-conditions')
     except:
         terms_and_conditions = None
     pymnt_mthd = request.POST.get('payment-method-input')
-    print(pymnt_mthd , 'payment method')
     cart = Cart.objects.get(cart_id = _cart_id(request))
 
     # For Saving order placed address
@@ -508,7 +473,7 @@ def checkout(request):
         fm = ProfileForm()
     # Calculate total Amount
     if(new_object_id != None):
-        print("id ",new_object_id) 
+    
         notes = request.POST.get('notes')
         customer = BilingAddress.objects.get(id = new_object_id)
         order = Order.objects.create(user=user , biling_address = customer,  status='PENDING' , payment_method = pymnt_mthd , total_amount = cart.total , sub_total = cart.subtotal , flat_shipping_rate = cart.shipping_rate , notes = notes )
@@ -534,7 +499,6 @@ def checkout(request):
 
 def orders(request , id):
     orders = Order.objects.get(id = id)
-    print(orders)
     return render(request, 'app/order.html',{"order":orders })
 
 
@@ -554,11 +518,9 @@ def search(request):
     else:
         try:
             data = request.GET['q']
-            print(data , 'data')
             suggestions = Product.objects.filter(Q(title__icontains = data) & Q(status = "Published"))
             print(suggestions , 'suggestion')
             suggestions_list = [ {'title' : product.title , 'img' : product.main_picture.url , 'url' : product.get_absolute_url() , 'price' : product.discounted_price } for product in suggestions]
-            print( suggestions_list, 'suggestion_list')
             
             # suggestions_list = ['apple', 'banana', 'orange']  # Example suggestions
             return HttpResponse(json.dumps(suggestions_list), content_type='application/json')
@@ -594,33 +556,25 @@ def filter_products(request, option, category=None, subcategory=None, subsubcate
         subsubcategory = slugify(subsubcategory)
         subsubcategory = subsubcategory.replace('-', ' ')
         products = Product.objects.filter(subsubcategory__name__iexact = subsubcategory)
-        print(products , 'product in subsubcategory')
 
     elif subcategory != 'None':
         subcategory = slugify(subcategory)
         subcategory = subcategory.replace('-', ' ')
         products = Product.objects.filter(subcategory__name__iexact = subcategory)
-        print(products , 'product in subcategory')
         
     elif category != 'None':
         category = slugify(category)
         category = category.replace('-', ' ')
         products = Product.objects.filter(category__name__iexact = category)
-        print(products , 'product in category')
 
     if option == "price-low":
-        print("price-low")
         products = products.order_by('discounted_price')
     elif option == "price-high":
-        print("price-high")
         products = products.order_by('-discounted_price')
     elif option == "latest":
-        print("latest")
         products = products.order_by('-id')
     elif option == "rating":
-        print("rating")
         products = products.annotate(avg_rating=Avg('reviews__rating')).order_by('-avg_rating')
-        print("products by average rating" , products )
     product_data = []
     for product in products:
         if product.product_images_set.first():
@@ -638,7 +592,7 @@ def filter_products(request, option, category=None, subcategory=None, subsubcate
             'brand': product.brand.brand_name,
             'brand_url': product.brand.brand_url,
             'category': product.category.name,
-            'subcategory': product.subcategory.name,
+            # 'subcategory': product.subcategory.name,
             'reviews': product.reviews_set.count(),
             'hover_image': hover_image_url,
             'rating': product.average_rating,
@@ -648,7 +602,6 @@ def filter_products(request, option, category=None, subcategory=None, subsubcate
             'type' : product.product_type ,
             # ... other product fields
         })
-    print(product_data , 'product_data')
     return JsonResponse(product_data, safe=False)
 
 
@@ -656,37 +609,23 @@ def filter_by_price(request , min_price , max_price ):
     category = request.GET.get('category')
     subcategory = request.GET.get('subcategory')
     subsubcategory = request.GET.get('subsubcategory')
-    print(category)
-    print(subcategory)
-    print(subsubcategory)
-    print(min_price)
-    print(max_price)
-    print(type(category))
-    print(type(subcategory))
-    print(type(subsubcategory))
     if subsubcategory != 'None':
         subsubcategory = slugify(subsubcategory)
         subsubcategory = subsubcategory.replace('-' , ' ')
-        print('subsubcategory')
         products = Product.objects.filter(Q(subsubcategory__name__iexact = subsubcategory) & Q(status = "Published"))       
     elif subcategory != 'None':
         subcategory = slugify(subcategory)
         subcategory = subcategory.replace('-' , ' ')
-        print( subcategory, 'subcategory')
         products = Product.objects.filter(Q(subcategory__name__iexact = subcategory) & Q(status = "Published"))       
-        print(products , 'products')
 
     elif category != 'None':
-        print('category')
         category = slugify(category)
         category = category.replace('-' , ' ')
         products = Product.objects.filter(Q(category__name__iexact = category) & Q(status = "Published"))       
     else:
-        print('else')
         products = Product.objects.filter(status = "Published").order_by('?')
 
     products = products.filter(discounted_price__range=(min_price , max_price))
-    print(products , 'products')
 
     product_data = []
     for product in products:
@@ -705,7 +644,7 @@ def filter_by_price(request , min_price , max_price ):
             'brand': product.brand.brand_name,
             'brand_url': product.brand.brand_url,
             'category': product.category.name,
-            'subcategory': product.subcategory.name,
+            # 'subcategory': product.subcategory.name,
             'reviews': product.reviews_set.count(),
             'hover_image': hover_image_url,
             'rating': product.average_rating,
@@ -715,12 +654,10 @@ def filter_by_price(request , min_price , max_price ):
             'type' : product.product_type ,
             # ... other product fields
         })
-    print(product_data , 'product_data')
     return JsonResponse(product_data, safe=False)
 
 def update_total(request):
     payment_method = request.GET.get('paymentMethod')
-    print(payment_method)
     cart = Cart.objects.get(cart_id = _cart_id( request))
     if payment_method == 'Cash On Delivery':
         cart = Cart.calculate_cart_amount_on_cash(cart)
@@ -764,7 +701,6 @@ def update_total(request):
 
 def quick_view(request):
     product_id = request.GET.get("prod_id")
-    print(product_id)
     product = Product.objects.get(id = product_id)
     return render(request , 'app/quick-view.html', {'product' : product})
 
@@ -896,13 +832,10 @@ def Customer_data(request):
         customers = Order.objects.filter(user = user)
         for customer in customers:
             customer_name = customer.user if customer.user.username != " " else customer.user.first_name
-            print(customer_name , 'customer name') 
-            print(customer.user , 'customer first name') 
             if customer_name not in customer_data:
                 customer_data[customer_name] = {'orders' : 0 , 'total_spend' : 0 , 'email' : customer.user.email}
             customer_data[customer_name]['orders'] = customers.count() 
             customer_data[customer_name]['total_spend'] += customer.total_amount
-    print(customer_data)    
     return render(request , 'app/customer.html' , {'customer_data' : customer_data})
 
 
@@ -1046,7 +979,6 @@ def order_modal(request , id):
         return JsonResponse({'status' : 'error' })    
 
 def handler404(request, exception):
-    print("Error Runing")
     return render(request, 'app/404.html', status=404)
 
 def export_products(request):
@@ -1175,19 +1107,14 @@ def export_products(request):
 
 def check_flashsale(request):
     try:
-        print('flashsale exist')
-        print(timezone.now())
         flash_sale = FlashSale.objects.get(end_time__lte = timezone.now())
         for item in flash_sale.flashsaleitem_set.all():
             product = item.product
-            print("original selling price " , product.original_selling_price)
             product.discounted_price = product.original_selling_price
             product.save()
         #     item.delete()
         # flash_sale.delete()
-        print('flashsale deleted')
     except FlashSale.DoesNotExist:
-        print('flashsale not exist')
         None
     return render(request , 'app/404.html')   
 

@@ -34,6 +34,7 @@
 									{% for category in main_categories %}
 									<li>
 										<a href="{{ category.url }}"> {{ category.name }} </a>
+										{% if category.subcategory_set.all %}										  
 										<ul>
 											{% for subcategory in category.subcategory_set.all %}
 			
@@ -48,6 +49,7 @@
 											</li>
 											{% endfor %}
 										</ul>
+										{% endif %}
 									</li>
 									{% endfor %}
 								</ul>
@@ -84,7 +86,7 @@
 								<h3 class="widget-title">Brands</h3>
 								<ul class="widget-body ">
 									{% for brand in  brands %}
-									<li><a href="/brand/{{brand.brand_url}}"> {{brand.brand_name}} </a></li>
+									<li><a href="/brand/{{brand.brand_url}}"> {{brand.brand_name}}  </a></li>
 									{% endfor %}
 								</ul>
 							</div>

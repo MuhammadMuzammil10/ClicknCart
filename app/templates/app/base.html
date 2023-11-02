@@ -244,6 +244,7 @@
                                         {% for category in main_categories %}
                                         <li>
                                             <a href="{{ category.url }}"> {{ category.name }} </a>
+                                            {% if category.subcategory_set.all %}                                              
                                             <ul>
                                                 {% for subcategory in category.subcategory_set.all %}
 
@@ -258,6 +259,7 @@
                                                 </li>
                                                 {% endfor %}
                                             </ul>
+                                            {% endif %}
                                         </li>
                                         {% endfor %}
                                     </ul>
@@ -567,6 +569,7 @@
                         {% for category in main_categories %}
                         <li>
                             <a href="{{ category.url }}"> {{ category.name }} </a>
+                            {% if category.subcategory_set.all %}                              
                             <ul>
                                 {% for subcategory in category.subcategory_set.all %}
 
@@ -581,6 +584,7 @@
                                 </li>
                                 {% endfor %}
                             </ul>
+                            {% endif %}
                         </li>
                         {% endfor %}
                     </ul>
@@ -603,7 +607,6 @@
                     <a href="/brand/">Brands</a>
                     <ul>
                         {% for brand in  brands %}
-        
                         <li><a href="/brand/{{brand.brand_url}}"> {{brand.brand_name}} </a></li>
                         {% endfor %}
                     </ul>

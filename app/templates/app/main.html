@@ -214,7 +214,6 @@
 								<a href="#" class="rating-reviews">( <span class="review-count"> {{ bestseller.reviews_set.count }} </span> reviews)</a>
 							</div>
 							{% endif %}
-                            
                             {% if not bestseller.out_of_stock %}
                                 {% if bestseller.product_type != '2' %}
                                     <a class="btn-product-no-modal btn-cart addtocart" id="addtocart" pid="{{bestseller.id}}" title="Add to cart"><i
