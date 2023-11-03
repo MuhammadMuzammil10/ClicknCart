@@ -539,7 +539,7 @@ def account(request):
     return render(request , 'app/account.html' , context)
 
 def filter_products(request, option, category=None, subcategory=None, subsubcategory=None):
-    
+    products = Product.objects.all()
     if subsubcategory != 'None':
         subsubcategory = slugify(subsubcategory)
         subsubcategory = subsubcategory.replace('-', ' ')
