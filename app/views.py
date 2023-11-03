@@ -715,7 +715,6 @@ def order_detail(request , id):
     order = Order.objects.get(id = id)
     return render(request, 'app/order-detail.html', {'order':order})
     
-@login_required
 def wishlist(request):
     wishlists = WishList.objects.filter(user = request.user)
     return render(request , 'app/wishlist.html' , {'wishlists' : wishlists} )
