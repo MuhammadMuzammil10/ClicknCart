@@ -87,9 +87,7 @@ class ProductAttributeAdmin(admin.ModelAdmin):
 class ProductAttributeValueAdmin(admin.ModelAdmin):
     form = ProductAttributeValueForm
 
-
 admin.site.register(ProductVariation)
-admin.site.register(Product_images)
 
 @admin.register(BilingAddress)
 class BilingAddressModelAdmin(admin.ModelAdmin):
