@@ -1,6 +1,5 @@
 vecom/
 media/
 static/
-staticfiles_build/
 __pycache__/
 db.sqlite3
