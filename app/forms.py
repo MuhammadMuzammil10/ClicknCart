@@ -1,5 +1,5 @@
 from django import forms
-from accounts.models import User
+from django.contrib.auth.models import User
 from django.contrib.auth import password_validation
 from django.contrib.auth.forms import AuthenticationForm, UsernameField, UserCreationForm, PasswordChangeForm, PasswordResetForm, SetPasswordForm
 from django.utils.translation import gettext_lazy as _
@@ -25,10 +25,10 @@ class InformationForm(forms.ModelForm):
         fields = ("__all__")
         
 class Product_imagesForm(forms.ModelForm):
-    RelatedImages = forms.ImageField(widget=forms.ClearableFileInput(attrs={'multiple': True}) , required=False)
     class Meta:
         model = Product_images
         fields = ("RelatedImages",)
+        widgets = {'RelatedImages' : forms.ClearableFileInput(attrs={'allow_multiple_selected': True})}
 
 class ProductAttributeForm(forms.ModelForm):
     class Meta:

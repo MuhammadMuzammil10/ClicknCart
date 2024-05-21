@@ -11,6 +11,12 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 import os 
 from pathlib import Path
+import dj_database_url
+
+from environ import Env
+env = Env()
+Env.read_env()
+ENVIRONMENT = env('ENVIRONMENT', default='production')
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,39 +26,38 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-y=1za3yk*uq2*j%gag$*a_bz__$1xg**30zsnf7yj)%mnq($08'
+SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+if ENVIRONMENT == 'development':
+    DEBUG = True
+else:
+    DEBUG = False
 
-ALLOWED_HOSTS = [
+ALLOWED_HOSTS = ['.vercel.app', '.now.sh', '127.0.0.1']
+
+CSRF_TRUSTED_ORIGINS = [ 'https://*.onrender.com' ]
+
+INTERNAL_IPS = [
     '127.0.0.1',
-    'localhost',
-    '.vercel.app',
-    '.now.sh',
-]
-# Application definition
-
-CSRF_TRUSTED_ORIGINS = [
-'https://f7ae-111-88-99-225.ngrok-free.app',
-
+    'localhost:8000',
 ]
 
 INSTALLED_APPS = [
-    'admin_soft.apps.AdminSoftDashboardConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    "django_htmx",
+    'allauth',
+    'allauth.account',
     'django.contrib.staticfiles',
-    'django.contrib.sites',
-    'ckeditor',
-    'app',
-    'accounts',
-    'django.contrib.humanize',
-    'cloudinary',
     'cloudinary_storage',
+    'cloudinary',
+    'app',
+    'ckeditor',
+    'django.contrib.humanize',
 ]
 
 
@@ -63,7 +68,9 @@ MIDDLEWARE = [
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
+    "allauth.account.middleware.AccountMiddleware",
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "django_htmx.middleware.HtmxMiddleware",
 ]
 
 ROOT_URLCONF = 'store.urls'
@@ -71,18 +78,27 @@ ROOT_URLCONF = 'store.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [ BASE_DIR / 'app/templates'],
+        'DIRS': [ BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.debug',
-                'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'app.context_processors.totalCart',
+                'django.template.context_processors.request',
             ],
         },
     },
+]
+
+AUTHENTICATION_BACKENDS = [
+   
+    # Needed to login by username in Django admin, regardless of `allauth`
+    'django.contrib.auth.backends.ModelBackend',
+
+    # `allauth` specific authentication methods, such as login by email
+    'allauth.account.auth_backends.AuthenticationBackend',
+    
 ]
 
 
@@ -98,22 +114,32 @@ TEMPLATES = [
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'railway',
-        'USER': 'postgres',
-        'PASSWORD': 'JjITTfmcCmerNyaOJRwM',
-        'HOST': 'containers-us-west-172.railway.app',
-        'PORT': '6981',
-   
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
 
+POSTGRES_LOCALLY = True
+if ENVIRONMENT == 'production' or POSTGRES_LOCALLY == True:
+    DATABASES['default'] = dj_database_url.parse(env('DATABASE_URL'))
+
+
+
 STATIC_URL = 'static/'
-STATICFILES_DIRS = os.path.join(BASE_DIR, 'app\static'),
+STATICFILES_DIRS = os.path.join(BASE_DIR, 'static'),
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles_build', 'static')
 
 MEDIA_URL = 'media/'
-MEDIA_ROOT = BASE_DIR / 'media'
+
+if ENVIRONMENT == 'production' or POSTGRES_LOCALLY == True: 
+    DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+    CLOUDINARY_STORAGE = {
+        'CLOUD_NAME': env('CLOUD_NAME'),
+        'API_KEY': env('CLOUD_API_KEY'),
+        'API_SECRET': env('CLOUD_API_SECRET')
+    }
+else:
+    MEDIA_ROOT = BASE_DIR / 'media'
 
 WSGI_APPLICATION = 'store.wsgi.application'
 
@@ -126,7 +152,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-AUTH_USER_MODEL = 'accounts.User'
 
 
 AUTHENTICATION_BACKENDS = [
@@ -138,9 +163,9 @@ ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_UNIQUE_EMAIL = True
+ACCOUNT_USERNAME_BLACKLIST = ['admin', 'accounts', 'category', 'profile', 'post', 'inbox', 'offical']
 
-SOCIALACCOUNT_LOGIN_ON_GET=True
-SITE_ID = 1
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
@@ -172,14 +197,7 @@ LOGOUT_REDIRECT_URL = 'login'
 
 LOGIN_REDIRECT_URL = None
 
-CLOUDINARY_STORAGE ={
-    'CLOUD_NAME' : 'dbp641wj3',
-    'API_KEY' : '195946173653817',
-    'API_SECRET' : 'u1560F9DWQFDKF9qrkGkIxNYUgY',
-}
 
-
-DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 # Email Config
 ACCOUNT_ADAPTER = 'accounts.adapter.CustomAccountAdapter'

@@ -1,0 +1,111 @@
+{% extends 'app/base.html' %}
+{% load static %}
+{% load custom_filters %}
+
+{% block main-content %}
+<main class="main">
+	{% if flashsale_obj %}
+	{{timer|json_script:"remaining-time"}}
+	<div class="page-header" style="background-image: url('/static/app/images/Flash.gif'); background-color: #3C63A4; object-fit: contain;">	
+		<div class="countdown-content-center">
+			<div class="countdown countdown-default" data-until="{{timer}}" data-relative="true" data-format="DHMS"></div>
+		</div>		
+	</div>
+	{% endif %}
+	<!-- End PageHeader -->
+	<div class="page-content mb-10 pb-3">
+		<div class="container">
+			{% if page_obj %}
+			<div class="row main-content-wrap gutter-lg">
+				{% include "includes/shop-sidebar.html" %}
+				<div class="col-lg-9 main-content">
+					<nav class="toolbox sticky-toolbox sticky-content fix-top">
+						<div class="toolbox-left">
+							<div class="toolbox-item toolbox-sort select-box text-dark">
+								<label>Sort By :</label>
+								<select name="orderby" class="form-control" id="filter-select">
+									<option value="default" onClick="window.location.reload();">Default</option>
+									<option value="latest" category="{{category}}" subcategory="{{subcategory}}" subsubcategory="{{subsubcategory}}">Latest</option>
+									<option value="rating" category="{{category}}" subcategory="{{subcategory}}" subsubcategory="{{subsubcategory}}">Sort by average rating</option>
+									<option value="price-low" category="{{category}}" subcategory="{{subcategory}}" subsubcategory="{{subsubcategory}}">Sort forward price low</option>
+									<option value="price-high" category="{{category}}" subcategory="{{subcategory}}" subsubcategory="{{subsubcategory}}"> Sort forward price high</option>
+								</select>
+							</div>
+						</div>
+						<div class="toolbox-right">
+						</div>
+					</nav>
+					<div class="row cols-2 cols-sm-3 cols-md-4 product-wrapper">
+						{% for product in page_obj %}
+						<div class="product-wrap">
+							{% include "snippets/product-wrap.html" %}
+						</div>
+						{% endfor %}
+
+					</div>
+					<nav class="toolbox toolbox-pagination" id="paginator">
+						<p class="show-info">Showing <span> {{page_obj.start_index}} to {{page_obj.end_index}} of {{page_obj.paginator.count}}</span> Products</p>
+						<ul class="pagination">
+
+							{% if page_obj.has_previous %}
+							<li class="page-item">
+
+								<a class="page-link page-link-prev" href="?page={{page_obj.previous_page_number}}"
+									aria-label="Previous" tabindex="-1" aria-disabled="true">
+									<i class="d-icon-arrow-left"></i>Prev
+								</a>
+							</li>
+							{% else %}
+							<li class="page-item disabled">
+								<a class="page-link page-link-prev" href="#" aria-label="Previous" tabindex="-1"
+									aria-disabled="true">
+									<i class="d-icon-arrow-left"></i>Prev
+								</a>
+							</li>
+							{% endif %}
+
+							</li>
+							{% for l in page_obj.paginator.page_range %}
+							{% if forloop.counter < 3 %} {% if forloop.counter == page_obj.number %} <li
+								class="page-item active" aria-current="page"><a class="page-link"	href="#">{{page_obj.number}}</a>
+								{% else %}
+								<li class="page-item"><a class="page-link"
+										href="?page={{forloop.counter}}">{{forloop.counter}}</a></li>
+								{% endif %}
+								{% endif %}
+								{% endfor %}
+								<li class="page-item page-item-dots"><a class="page-link" href="?page={{page_obj.paginator.page_range|length }}">{{ page_obj.paginator.page_range|length }}</a></li>
+								{% if page_obj.has_next %}
+								<li class="page-item">
+									<a class="page-link page-link-next" href="?page={{page_obj.next_page_number}}"
+										aria-label="Next">
+										Next<i class="d-icon-arrow-right"></i>
+									</a>
+								</li>
+								{% else %}
+								<li class="page-item disabled">
+									<a class="page-link page-link-next" href="#" aria-label="Next">
+										Next<i class="d-icon-arrow-right"></i>
+									</a>
+								</li>
+
+								{% endif %}
+						</ul>
+					</nav>
+				</div>
+			</div>
+			{% else %}
+			<div class="container mt-10">
+				<div class="alert alert-light alert-danger alert-icon alert-inline mb-4">
+					<i class="fas fa-exclamation-triangle"></i>
+					<h4 class="alert-title">Oh snap!</h4>
+					We can't find products matching the selection.
+				</div>
+			</div>
+			{% endif %}
+		</div>
+	</div>
+
+</main>
+{% endblock main-content %}
+<!-- End Main -->

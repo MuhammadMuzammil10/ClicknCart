@@ -22,7 +22,7 @@ urlpatterns = [
     path('subsubcategories/', views.subsubcategories_view, name='subsubcategories_view'),
     
     
-    path('add-to-cart/', views.add_to_cart, name='add-to-cart'),
+    path('add-to-cart/<prod_id>', views.add_to_cart, name='add-to-cart'),
     path('add-to-wishlist/', views.add_to_wishlist, name='add-to-wishlist'),
     path('cart/', views.showCart, name='show-cart'),
     path('plus_cart/', views.plus_cart, name='pluscart'),
@@ -93,7 +93,6 @@ urlpatterns = [
     path('add-product/', views.add_product, name='add-product'),
     
     path('check/', views.check_flashsale, name='check'),
-    
     
     path('<str:name>/', views.information_detail, name='information'),
 ]

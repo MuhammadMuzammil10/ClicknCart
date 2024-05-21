@@ -1,0 +1,400 @@
+﻿{% extends 'app/base.html' %}
+{% load static %}
+{% load custom_filters %}
+{% block title %}
+
+  {{product.title}}
+{% endblock title %}
+
+{% block metablock %}
+	<meta name="keywords" content="{{product.meta_keywords}}">
+	<meta name="description" content="{{product.meta_description}}">
+{% endblock metablock %}
+
+{% block main-content %}
+<!-- End Header -->
+
+<main class="main mt-8 single-product">
+	<div class="page-content mb-10 pb-6">
+		<div class="container">
+			<section id="product-error"></section>
+			<div class="product product-single row mb-8">
+				<div class="col-md-6">
+					<div class="product-gallery pg-vertical">
+						<div class="product-single-carousel owl-carousel owl-theme owl-nav-inner row cols-1">
+							<figure class="product-image">
+								<img src="{{product.main_picture.url}}" data-zoom-image="{{product.main_picture.url}}"
+									alt="Women's Brown Leather Backpacks" width="800" height="900">
+							</figure>
+							{% for img in product.product_images_set.all %}
+							<figure class="product-image">
+								<img src="{{img.RelatedImages.url}}" data-zoom-image="{{img.RelatedImages.url}}"
+									alt="Women's Brown Leather Backpacks" width="800" height="900">
+							</figure>
+							{% endfor %}
+						</div>
+						<div class="product-thumbs-wrap">
+							<div class="product-thumbs">
+								<div class="product-thumb ">
+									<img src="{{product.main_picture.url}}" alt="product thumbnail" width="109"
+										height="122">
+								</div>
+								{% for img in product.product_images_set.all %}
+								<div class="product-thumb ">
+									<img src="{{img.RelatedImages.url}}" alt="product thumbnail" width="109"
+										height="122">
+								</div>
+								{% endfor %}
+							</div>
+							<button class="thumb-up disabled"><i class="fas fa-chevron-left"></i></button>
+							<button class="thumb-down disabled"><i class="fas fa-chevron-right"></i></button>
+						</div>
+						{% if not product.out_of_stock  %}
+						{% if product.discount_perc > 0 %}
+						  
+						<div class="product-label-group">
+							<label class="product-label label-sale">-{{product.discount_perc}}% off</label>
+                        </div>
+						{% endif %}
+						{% else %}
+						<div class="product-label-group">
+							<label class="product-label label-stock">Out of Stock</label>
+                        </div>
+						{% endif %}
+					</div>
+				</div>
+				<div class="col-md-6">
+					<div class="product-details">
+						<div class="product-navigation">
+							<ul class="breadcrumb breadcrumb-lg">
+								<li><a href="/"><i class="d-icon-home"></i></a></li>
+								<li><a href="{% url 'shop' product.category %}"
+										class="active text-uppercase">{{ product.category.name }}</a></li>
+								{% if product.subcategory %}
+								<li><a href="{% url 'shop' product.category product.subcategory %}"
+									class="active text-uppercase">{{ product.subcategory.name }}</a></li>
+								{% endif %}
+								{% if product.subsubcategory %}
+								<li class="text-uppercase">{{ product.subsubcategory.name}}</li>
+								{% endif %}
+							</ul>
+						</div>
+						<h1 class="product-name">{{product.title}}</h1>
+						<div class="product-meta">
+							SKU: <span class="product-sku">{{product.SKU_number}}</span>
+							BRAND: <span class="product-brand">{{product.brand.brand_name}}</span>
+						</div>
+						{% if product.product_type != '1' %}
+						  <span class="price-label">As low as</span>
+						{% endif %}
+						<div class="product-price">
+							<ins class="new-price">Rs {{product.discounted_price|format_price }}</ins>
+							{% if product.selling_price %}
+							<del class="old-price">Rs {{ product.selling_price|format_price }}</del>
+							{% endif %}
+						</div>
+						{% if product.has_active_flash_sale %}
+						{{product.get_flash_sale_remaining_time|json_script:"remaining-time"}}
+						<div class="product-countdown-container font-weight-semi-bold">
+							<label class="">Off Ends In:</label>
+							<div class="product-countdown countdown-compact is-countdown"><span class="countdown-row countdown-amount" id="flash-sale-timer"></span></div><!-- End of .product-countdown -->
+						</div>
+						{% endif %}
+						{% if product.reviews_set.count  > 0 %}
+						<div class="ratings-container">
+							<div class="ratings-full">
+								<span class="ratings" style="width:{{ product.average_rating}}%"></span>
+								<span class="tooltiptext tooltip-top"></span>
+							</div>
+							<a href="#product-tab-reviews" class="link-to-tab rating-reviews">( {{ product.reviews_set.count }} reviews )</a>
+						</div>
+						{% endif %}
+						{% if product.short_description %}
+						<p class="product-short-desc">
+							{{ product.short_description|safe }}</p>
+						{% endif %}
+						<hr class="product-divider">
+						{% if product.quantity < 10 %}
+						 <span> Only {{product.quantity}} item(s) left </span>
+						 <hr>
+						{% endif %}
+						{% if product.product_type == '1' %}
+							<div class="product-form product-qty">
+								{% if not product.out_of_stock %}	
+								<div class="input-group mr-2">
+									<button class="quantity-minus d-icon-minus"></button>
+									<input class="quantity form-control" type="number" min="1" max="{{product.quantity}}" id="product_qty">
+									<button class="quantity-plus d-icon-plus"></button>
+								</div>						  
+								<div class="product-form-group">
+									<a class="btn-product-no-modal btn-cart" title="Add to cart"
+										hx-get="{% url 'add-to-cart' product.id %}"
+										hx-target="#cart-dropdown"
+										hx-swap="innerHTML"
+										hx-trigger="click"
+										hx-indicator="#indicator-{{ product.id }}">
+											<!-- By Sam Herbert (@sherb), for everyone. More @ http://goo.gl/7AJzbL -->
+											<svg width="60" height="16" class="spinner" id="indicator-{{ product.id }}" viewBox="0 0 120 30" xmlns="http://www.w3.org/2000/svg" fill="#fff">
+												<circle cx="15" cy="15" r="15">
+													<animate attributeName="r" from="15" to="15"
+															begin="0s" dur="0.8s"
+															values="15;9;15" calcMode="linear"
+															repeatCount="indefinite" />
+													<animate attributeName="fill-opacity" from="1" to="1"
+															begin="0s" dur="0.8s"
+															values="1;.5;1" calcMode="linear"
+															repeatCount="indefinite" />
+												</circle>
+												<circle cx="60" cy="15" r="9" fill-opacity="0.3">
+													<animate attributeName="r" from="9" to="9"
+															begin="0s" dur="0.8s"
+															values="9;15;9" calcMode="linear"
+															repeatCount="indefinite" />
+													<animate attributeName="fill-opacity" from="0.5" to="0.5"
+															begin="0s" dur="0.8s"
+															values=".5;1;.5" calcMode="linear"
+															repeatCount="indefinite" />
+												</circle>
+												<circle cx="105" cy="15" r="15">
+													<animate attributeName="r" from="15" to="15"
+															begin="0s" dur="0.8s"
+															values="15;9;15" calcMode="linear"
+															repeatCount="indefinite" />
+													<animate attributeName="fill-opacity" from="1" to="1"
+															begin="0s" dur="0.8s"
+															values="1;.5;1" calcMode="linear"
+															repeatCount="indefinite" />
+												</circle>
+											</svg>
+											<span class="button-content"><i class="d-icon-bag"></i> Add to cart</span>
+									</a>  
+								</div>
+								{% else %}
+								<button class="out-of-stock">Out of Stock</button>
+								{% endif %}
+							</div>
+						{% else %}
+						{% for attribute , variations in variation_dict.items %}
+						<div class="product-form product-variations product-color">
+							<label for="variation-select">{{ attribute }}:</label>
+							<div class="select-box">
+								<select name="color" class="form-control" id="variation-select">
+									<option value="" selected="selected">Choose an Option</option>
+									{% for value in variations %}
+									<option value="{{ value.attributes }}" price="{{value.price}}" pid="{{product.id}}">{{ value.attributes.value }}</option>
+									{% endfor %}
+								</select>
+								{% if forloop.last %}
+								<a href="#" class="product-variation-clean" style="display: none;">Clean All</a>
+								{% endif %}
+							</div>
+						</div>
+						{% endfor %}
+						<div class="product-variation-price">
+							<p></p>
+						</div>
+						<hr class="product-divider">
+
+						<div class="product-form product-qty">
+							{% if product.quantity >= 1 or product.available_stock == 'In Stock' %}	
+							<div class="input-group mr-2">
+								<button class="quantity-minus d-icon-minus"></button>
+								<input class="quantity form-control" type="number" min="1" max="{{product.quantity}}" id="product_qty">
+								<button class="quantity-plus d-icon-plus"></button>
+							</div>						  
+							<div class="product-form-group">
+								<button
+									class="btn-product btn-cart text-normal ls-normal font-weight-semi-bold" pid="{{product.id}}"><i
+										class="d-icon-bag"></i>Add to Cart
+								</button>
+							</div>
+							{% else %}
+							<button class="out-of-stock">Out of Stock</button>
+							{% endif %}
+						</div>
+
+						<hr class="product-divider mb-3">
+						{% endif %}
+						<p style="background-color:#f8f8f8; width: 40rem; padding-top:6px; padding-bottom:6px; padding-left:15px; padding-right:15px; border-radius:5px; margin-top: 20px;">Delivery within 2-3 working days.</p>
+						<p style="background-color:#f8f8f8; width: 40rem; padding-top:6px; padding-bottom:6px; padding-left:15px; padding-right:15px; border-radius:5px">Secured Payment</p>
+						<p style="background-color:#f8f8f8; width: 40rem; padding-top:6px; padding-bottom:6px; padding-left:15px; padding-right:15px; border-radius:5px">Original Product Guaranteed</p>
+						<hr>
+						<div class="product-footer">
+							
+						</div>
+					</div>
+				</div>
+			</div>
+
+
+			<div class="tab tab-nav-simple product-tabs mb-4">
+				<ul class="nav nav-tabs justify-content-center" role="tablist">
+					{% if product.long_description %}
+					  
+					<li class="nav-item">
+						<a class="nav-link active" href="#product-tab-description">Description</a>
+					</li>
+					{% endif %}
+					<li class="nav-item">
+						<a class="nav-link" href="#product-tab-reviews">Reviews ({{ product.reviews_set.count }})</a>
+					</li>
+				</ul>
+				<div class="tab-content  p-0 single-page-tabs ibm-plex">
+					{% if product.long_description %}
+					<div class="tab-pane fade show active in" id="product-tab-description">
+						<div class="container mt-6" style="max-width: fit-content;">
+							<div class="row">
+								{{ product.long_description|safe }}
+							</div>
+						</div>
+					</div>
+					{% endif %}
+					<div class="tab-pane " id="product-tab-reviews">
+						<div class="comments mb-8 pt-2 pb-2 border-no">
+							<ul>
+									{% if page_obj != 'none' %}
+									{% for review in page_obj %}
+									<div class="comment">
+										
+										<div class="comment-body">
+											<div class="comment-rating ratings-container mb-0">
+												<div class="ratings-full">
+													<span class="ratings" style="width:{{review.average_rating}}%"></span>
+													<span class="tooltiptext tooltip-top"></span>
+												</div>
+											</div>
+											<div class="comment-user">
+												<span class="comment-date text-body">{{review.date}}</span>
+												<h4><a href="#"> {{review.name}} </a></h4>
+											</div>
+
+											<div class="comment-content">
+												<p> {{review.comment}}  </p>
+											</div>
+										</div>
+									</div>
+									<hr>
+								{% endfor %}
+							</ul>
+							<nav class="toolbox toolbox-pagination" id="paginator">
+								<p class="show-info">Showing <span> {{page_obj.start_index}} to {{page_obj.end_index}} of {{page_obj.paginator.count}}</span> Reviews</p>
+								<ul class="pagination">
+									{% if page_obj.has_previous %}
+									<li class="page-item">
+										<a class="page-link page-link-prev" href="?page={{page_obj.previous_page_number}}"
+											aria-label="Previous" tabindex="-1" aria-disabled="true">
+											<i class="d-icon-arrow-left"></i>Prev
+										</a>
+									</li>
+									{% else %}
+									<li class="page-item disabled">
+										<a class="page-link page-link-prev" href="#" aria-label="Previous" tabindex="-1"
+										aria-disabled="true">
+										<i class="d-icon-arrow-left"></i>Prev
+										</a>
+									</li>
+									{% endif %}
+									</li>
+									{% for l in page_obj.paginator.page_range %}
+									{% if forloop.counter < 3 %} 
+									{% if forloop.counter == page_obj.number %}
+									<li class="page-item active" aria-current="page"><a class="page-link"
+										href="#">{{page_obj.number}}</a>
+										{% else %}
+										<li class="page-item"><a class="page-link"	href="?page={{forloop.counter}}">{{forloop.counter}}</a></li>
+										{% endif %}
+										{% endif %}
+										{% endfor %}
+										<li class="page-item page-item-dots"><a class="page-link" href="?page={{page_obj.paginator.page_range|length }}">{{ page_obj.paginator.page_range|length }}</a></li>
+										{% if page_obj.has_next %}
+										<li class="page-item">
+											<a class="page-link page-link-next" href="?page={{page_obj.next_page_number}}"
+											aria-label="Next">
+												Next<i class="d-icon-arrow-right"></i>
+											</a>
+										</li>
+										{% else %}
+										<li class="page-item disabled">
+											<a class="page-link page-link-next" href="#"
+												aria-label="Next">
+												Next<i class="d-icon-arrow-right"></i>
+											</a>
+										</li>
+										{% endif %}
+								</ul>
+							</nav>
+							{% endif %}
+						</div>
+						<!-- End Comments -->
+						<div class="reply">
+							<div class="title-wrapper text-left">
+								<h3 class="title title-simple text-left text-normal">Add a Review</h3>
+								<p>Your email address will not be published. Required fields are marked *</p>
+							</div>
+							<form action="" method="POST">
+								{% csrf_token %}
+								<div class="rating-form">
+								  <label for="rating" class="text-dark">Your rating * </label>
+								  <span class="rating-stars selected">
+									<a class="star-1" href="#">1</a>
+									<a class="star-2" href="#">2</a>
+									<a class="star-3 active" href="#">3</a>
+									<a class="star-4" href="#">4</a>
+									<a class="star-5" href="#">5</a>
+								  </span>
+								  <input type="hidden" id="selected-rating" name="rating" value="">
+								</div>
+								{{form.comment}}
+								<div class="row">
+								  <div class="col-md-6 mb-5">
+									{{form.name}}
+								  </div>
+								  <div class="col-md-6 mb-5">
+									{{form.email}}
+								  </div>
+								</div>
+								
+								<button type="submit" class="btn btn-primary btn-rounded">Submit<i
+								  class="d-icon-arrow-right"></i></button>
+							  </form>
+							  
+						</div>
+						<!-- End Reply -->
+					</div>
+				</div>
+			</div>
+
+			<section class="pt-3 mt-10">
+				<h2 class="title justify-content-center">Related Products</h2>
+				<div class="owl-carousel owl-theme owl-nav-full row cols-2 cols-md-3 cols-lg-4" data-owl-options="{
+							'items': 5,
+							'nav': false,
+							'loop': false,
+							'dots': true,
+							'margin': 20,
+							'responsive': {
+								'0': {
+									'items': 2
+								},
+								'768': {
+									'items': 3
+								},
+								'992': {
+									'items': 5,
+									'dots': false,
+									'nav': true
+								}
+							}
+						}">
+					{% for product in related_product %}
+					<div class="product-wrap">
+						{% include "snippets/product-wrap.html" %}
+					</div>
+					{% endfor %}
+				</div>
+			</section>
+		</div>
+	</div>
+</main>
+
+{% endblock main-content %}

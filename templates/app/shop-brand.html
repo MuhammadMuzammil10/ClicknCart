@@ -1,0 +1,57 @@
+{% extends "app/base.html" %}
+{% load static %}
+{% load custom_filters %}
+{% block title %}
+ {{brand}} at
+{% endblock title %}
+{% block main-content %}
+<main class="main">
+	<div class="container mt-5 mx-5">
+		{{products.first.brand.brand_description|safe }}
+	</div>
+
+	<!-- End PageHeader -->
+	<div class="page-content mb-10 pb-6">
+		<div class="container">
+			{% if products %}			  
+			<div class="row main-content-wrap gutter-lg">
+				<div class="main-content">
+					<nav class="toolbox sticky-toolbox sticky-content fix-top">
+						<div class="toolbox-left">
+							<div class="toolbox-item toolbox-sort select-box text-dark">
+								<label>Sort By :</label>
+								<select name="orderby" class="form-control" id="brand-filter-select">
+									<option value="default" onClick="window.location.reload();">Default</option>
+									<option value="latest" brand="{{brand}}">Latest</option>
+									<option value="rating" brand="{{brand}}">Sort by average rating</option>
+									<option value="price-low" brand="{{brand}}">Sort forward price low</option>
+									<option value="price-high" brand="{{brand}}"> Sort forward price high</option>
+								</select>
+							</div>
+						</div>
+						<div class="toolbox-right">
+						</div>
+					</nav>
+					<div class="row cols-2 cols-sm-3 cols-lg-5 product-wrapper">
+						{% for product in products %}						  
+						<div class="product-wrap">
+							{% include "snippets/product-wrap.html" %}
+						</div>
+						{% endfor %}
+					</div>
+				</div>
+			</div>
+			{% else %}
+			<div class="container mt-10">
+				<div class="alert alert-light alert-danger alert-icon alert-inline mb-4">
+					<i class="fas fa-exclamation-triangle"></i>
+					<h4 class="alert-title">Oh snap!</h4>
+					We can't find products matching the selection.
+				</div>
+			</div>
+			{% endif %}
+		</div>
+	</div>
+</main>
+<!-- End Main -->
+{% endblock main-content %}

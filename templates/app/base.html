@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+{% load static %}
+{% load custom_filters %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+    <title> {% block title %} ClicKnCart -#1 Mother , Child & shop {% endblock title %} - Click N Cart</title>
+    {% block metablock %}
+    <meta name="title" content="ClicKnCart!">
+    <meta name="keywords" content="HTML5 Template" />
+    <meta name="description" content="SHOPZY - Ultimate eCommerce Template">
+    {% endblock metablock %}
+
+    <meta name="author" content="ClicKnCart">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="{% static 'app/images/logo.png' %}">
+    <script>
+        WebFontConfig = {
+            google: { families: ['Poppins:300,400,500,600,700,800'] }
+        };
+        (function (d) {
+            var wf = d.createElement('script'), s = d.scripts[0];
+            wf.src = "{% static 'app/js/webfont.js' %}";
+            wf.async = true;
+            s.parentNode.insertBefore(wf, s);
+        })(document);
+    </script>
+
+    <style>
+        .widget-body a:hover {
+            color: red; /* Change this to the desired text color */
+        }
+    </style>
+
+    <script src="https://kit.fontawesome.com/978212cf0a.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" type="text/css" href="{% static 'app/vendor/animate/animate.min.css' %}">
+
+    <link rel="stylesheet" type="text/css" href="{% static 'app/vendor/fontawesome-free/css/all.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'app/vendor/animate/animate.min.css' %}">
+
+    <!-- Plugins CSS File -->
+    <link rel="stylesheet" type="text/css" href="{% static 'app/vendor/magnific-popup/magnific-popup.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'app/vendor/owl-carousel/owl.carousel.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'app/vendor/codemirror/codemirror.css' %}">
+
+    <link rel="stylesheet" type="text/css" href="{% static 'app/vendor/photoswipe/photoswipe.min.css' %}">
+    <link rel="stylesheet" type="text/css"
+        href="{% static 'app/vendor/photoswipe/default-skin/default-skin.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'app/vendor/sticky-icon/stickyicon.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'app/vendor/nouislider/nouislider.min.css' %}">
+
+
+    <!-- Main CSS File -->
+    <link rel="stylesheet" type="text/css" href="{% static 'app/css/style.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'app/css/style.css' %}">
+    
+
+
+</head>
+
+<body>
+    <div class="page-wrapper">
+
+        <!-- Start Header -->
+
+    
+        {% load header %}
+        {% header request %}
+    
+        <!-- End Header -->
+        <main class="main">
+            {% block main-content %}
+
+            {% endblock main-content %}
+        </main>
+        <!-- End Main -->
+
+        <!-- new footer -->
+        {% load footer %}
+        {% footer request %}
+
+        <!-- end new footer -->
+
+        <div class="minipopup-area"></div>
+    </div>
+    <!-- Sticky Footer -->
+   {% include "includes/sticky-footer.html" %}
+    <!-- Scroll Top -->
+
+    <a id="scroll-top" href="#top" title="Top" role="button" class="scroll-top"><i class="d-icon-arrow-up"></i></a>
+    <!-- Root element of PhotoSwipe. Must have class pswp. -->
+
+    <div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+        <!-- Background of PhotoSwipe. It's a separate element as animating opacity is faster than rgba(). -->
+        <div class="pswp__bg"></div>
+
+        <!-- Slides wrapper with overflow:hidden. -->
+        <div class="pswp__scroll-wrap">
+
+            <!-- Container that holds slides.
+			PhotoSwipe keeps only 3 of them in the DOM to save memory.
+			Don't modify these 3 pswp__item elements, data is added later on. -->
+            <div class="pswp__container">
+                <div class="pswp__item"></div>
+                <div class="pswp__item"></div>
+                <div class="pswp__item"></div>
+            </div>
+
+            <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+            <div class="pswp__ui pswp__ui--hidden">
+
+                <div class="pswp__top-bar">
+
+                    <!--  Controls are self-explanatory. Order can be changed. -->
+
+                    <div class="pswp__counter"></div>
+
+                    <button class="pswp__button pswp__button--close" aria-label="Close (Esc)"></button>
+                    <button class="pswp__button pswp__button--zoom" aria-label="Zoom in/out"></button>
+
+                    <div class="pswp__preloader">
+                        <div class="loading-spin"></div>
+                    </div>
+                </div>
+
+                <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                    <div class="pswp__share-tooltip"></div>
+                </div>
+
+                <button class="pswp__button--arrow--left" aria-label="Previous (arrow left)"></button>
+                <button class="pswp__button--arrow--right" aria-label="Next (arrow right)"></button>
+
+                <div class="pswp__caption">
+                    <div class="pswp__caption__center"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MobileMenu -->
+    {% include "includes/mobile-menu.html" %}
+
+    <!-- newsletter-popup default -->
+
+    <!-- sticky icons-->
+
+    <div id="cover-spin"></div>
+    <!-- Plugins JS File -->
+    <script src="{% static 'app/vendor/jquery/jquery.min.js' %}"></script>
+    <script src="{% static 'app/vendor/jquery.count-to/jquery.count-to.min.js' %}"></script>
+    <script src="{% static 'app/vendor/jquery.plugin/jquery.plugin.min.js' %}"></script>
+    <script src="https://unpkg.com/htmx.org@1.9.12"></script>
+    <script src="https://unpkg.com/hyperscript.org@0.9.12"></script>
+
+    <script src="{% static 'app/vendor/parallax/parallax.min.js' %}"></script>
+    <script src="{% static 'app/vendor/imagesloaded/imagesloaded.pkgd.min.js' %}"></script>
+    <script src="{% static 'app/vendor/elevatezoom/jquery.elevatezoom.min.js' %}"></script>
+    <script src="{% static 'app/vendor/magnific-popup/jquery.magnific-popup.min.js' %}"></script>
+    <script src="{% static 'app/vendor/owl-carousel/owl.carousel.min.js' %}"></script>
+    <script src="{% static 'app/vendor/codemirror/codemirror.min.js' %}"></script>
+    <script src="{% static 'app/vendor/photoswipe/photoswipe.min.js' %}"></script>
+    <script src="{% static 'app/vendor/photoswipe/photoswipe-ui-default.min.js' %}"></script>
+    <script src="{% static 'app/vendor/nouislider/nouislider.min.js' %}"></script>
+    <script src="{% static 'app/vendor/sticky/sticky.min.js' %}"></script>
+
+
+    <!-- Main JS File -->
+
+    <script src="{% static 'app/js/main.min.js' %}"></script>
+    <script src="{% static 'app/js/myscript.js' %}"></script>
+    <script>
+        function changeBannerImage() {
+            var screenWidth = window.innerWidth;
+            var banners = document.querySelectorAll('.banner');
+            banners.forEach(function(banner) {
+              var image = banner.querySelector('img');
+              var bannerImageURL = image.dataset.bannerImage;
+              var bannerMobileImageURL = image.dataset.bannerMobileImage;
+              if (screenWidth < 768) {
+                image.src = bannerMobileImageURL;
+              } else {
+                image.src = bannerImageURL;
+              }
+            });
+          }
+          window.addEventListener('load', changeBannerImage);
+          window.addEventListener('resize', changeBannerImage);
+    </script>
+
+</body>
+</html>

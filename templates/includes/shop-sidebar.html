@@ -1,0 +1,76 @@
+<aside class="col-lg-3 sidebar sidebar-fixed sidebar-toggle-remain shop-sidebar sticky-sidebar-wrapper">
+    <div class="sidebar-overlay"></div>
+    <a class="sidebar-close" href="#"><i class="d-icon-times"></i></a>
+    <div class="sidebar-content">
+        <div class="sticky-sidebar" data-sticky-options="{'top': 10}">
+            <div class="filter-actions mb-4">
+                <a href="#"
+                    class="sidebar-toggle-btn toggle-remain btn btn-outline btn-primary btn-icon-right btn-rounded">Filter<i
+                        class="d-icon-arrow-left"></i></a>
+                <a href="#" class="filter-clean">Clean All</a>
+            </div>
+            <div class="widget widget-collapsible">
+                <h3 class="widget-title">All Categories</h3>
+                <ul class="widget-body filter-items search-ul">
+                    {% for category in main_categories %}
+                    <li>
+                        <a href="{{ category.url }}"> {{ category.name }} </a>
+                        {% if category.subcategory_set.all %}										  
+                        <ul>
+                            {% for subcategory in category.subcategory_set.all %}
+
+                            <li><a href="{{ subcategory.url }}"> {{subcategory.name}} </a>
+                                <ul>
+                                    {% for subsubcategory in subcategory.subsubcategory_set.all %}
+
+                                    <li><a href="{{ subsubcategory.url }}"> {{subsubcategory.name}} </a></li>
+
+                                    {% endfor %}
+                                </ul>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
+                    </li>
+                    {% endfor %}
+                </ul>
+                    
+            </div>
+            <div class="widget widget-collapsible">
+                <h3 class="widget-title">Filter by Price</h3>
+                <div class="widget-body mt-3">
+                    <form action="" id="filter_by_price">
+                        <input type="hidden" name="data"  category="{{category}}" subcategory="{{subcategory}}" subsubcategory="{{subsubcategory}}">
+                        <div class="wra">
+                            <div class="values">
+                                <span id="range1">
+                                Rs {{min_price}}
+                                </span>
+                                <span> &dash; </span>
+                                <span id="range2">
+                                Rs {{max_price}}
+                                </span>
+                            </div>
+                            <div class="cont">
+                                <div class="slider-track"></div>
+                                <input type="range" min="{{min_price}}" max="{{max_price}}" value="{{min_price}}" id="slider-1" oninput="slideOne()">
+                                <input type="range" min="{{min_price}}" max="{{max_price}}" value="{{max_price}}" id="slider-2" oninput="slideTwo()">
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-dark btn-filter" id="filterbtn">Filter</button>
+                    </form>
+                                            
+                </div>
+            </div>
+            
+            <div class="widget widget-collapsible">
+                <h3 class="widget-title">Brands</h3>
+                <ul class="widget-body ">
+                    {% for brand in  brands %}
+                    <li><a href="/brand/{{brand.brand_url}}"> {{brand.brand_name}}  </a></li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</aside>

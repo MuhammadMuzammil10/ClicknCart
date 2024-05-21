@@ -1,0 +1,85 @@
+{% load static %}
+<footer class="footer">
+    <div class="container">
+        <div class="footer-middle">
+            <div class="row pt-2">
+                <div class="col-lg-2 d-flex">
+                    <a href="/" class="logo-footer">
+                        <img src="{% static 'app/images/logo.png' %}" alt="logo-footer" width="154">
+                    </a>
+                </div>
+                <div class="col-lg-3 col-contact col-md-6">
+                    <div class="widget widget-contact">
+                        <h4 class="widget-title">Get In Touch</h4>
+                        <ul class="widget-body">
+                            <li>
+                                <label>Phone</label>
+                                <a href="tel:{{company.phone}}">{{company.phone}}</a>
+                            </li>
+                            <li>
+                                <label>Email</label>
+                                <a href="mailto:{{company.email}}"> {{company.email}} </a>
+                            </li>
+                        
+                            <li>
+                                <label>WORKING DAYS / HOURS</label> <br> <br>
+                                <a href="#">Mon - Sun / 9:00 AM - 8:00 PM</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-account col-md-6">
+                    <div class="widget">
+                        <h4 class="widget-title">About Us</h4>
+                        <ul class="widget-body">
+                            {% for page in pages %}
+                            <li>
+                                <a href="{% url 'information' page.url %}"> {{page.information_title}} </a>
+                            </li>
+                            {% endfor %}
+                            <li>
+                                <a href="{% url 'track-order' %}">Track your Order </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="widget widget-newsletter form-wrapper">
+                        <div class="newsletter-info mb-3">
+                            <h4 class="widget-title mb-3">Subscribe Newsletter</h4>
+                            <p>Don't miss out! <b>Subscribe to ClicKnCart Newsletter</b> for the Golden Shake and be the first to receive timely updates on our new arrivals and exciting offers on your favorite products.</p>
+                        </div>
+                        <form method="POST" class="input-wrapper input-wrapper-inline" novalidate>
+                            {% csrf_token %}
+                            {{ newsLetterform.as_p }}
+                            <button class="btn btn-primary btn-rounded btn-md ls-normal ml-2"
+                                type="submit">subscribe<i class="d-icon-arrow-right"></i></button>
+                        </form>
+                    </div>
+                    <div class="social-links">
+                        <a href="#" title="social-link"
+                            class="social-link social-facebook fab fa-facebook-f"></a>
+                        <a href="#" title="social-link" class="social-link social-twitter fab fa-twitter"></a>
+                        <a href="#" title="social-link"
+                            class="social-link social-instagram fab fa-instagram"></a>
+                        <a href="#" title="social-link"
+                            class="social-link social-pinterest fab fa-pinterest-p"></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <div class="footer-left">
+                <p class="copyright">Copyright © 2022 ClicKnCart Store. All Rights Reserved.</p>
+            </div>
+            <div class="footer-right">
+                <figure class="d-flex">
+                    <img src="{% static 'app/images/payment.png' %}" alt="payment" width="159" height="29" />
+                </figure>
+
+            </div>
+        </div>
+    </div>
+
+</footer>

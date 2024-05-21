@@ -1,0 +1,247 @@
+{% extends 'app/base.html' %}
+{% load static %}
+{% load custom_filters %}
+{% block main-content %}
+<main class="main">
+    <div class="page-content">
+        
+        <section class="intro-section">
+            <div class="owl-carousel owl-theme row owl-dot-inner owl-dot-white intro-slider animation-slider cols-1 gutter-no"
+                data-owl-options="{
+                'nav': true,
+                'dots': true,
+                'loop': true,
+                'items': 1,
+                'autoplay': true,
+                'autoplayTimeout': 5000
+            }">
+            {% for banner in banners %}
+            <div {% if banner.url %} onclick="window.location.href='{{ banner.url }}'" {% endif %} class="banner banner-2 banner-fixed">
+              <figure>
+                <img src="{{banner.image.url}}" data-banner-image="{{banner.image.url}}" {% if banner.mobile_image %} data-banner-mobile-image="{{banner.mobile_image.url}}" {% else %} data-banner-mobile-image="{{banner.image.url}}" {% endif %} width="1150" height="548" style="background-color: #fff;">
+              </figure>
+            </div>
+          {% endfor %}
+            </div>
+            
+            <div class="container mt-6 appear-animate">
+                <div class="service-list">
+                    <div class="owl-carousel owl-theme row cols-lg-3 cols-sm-2 cols-1" data-owl-options="{
+                            'items': 3,
+                            'nav': false,
+                            'dots': false,
+                            'loop': true,
+                            'autoplay': false,
+                            'autoplayTimeout': 5000,
+                            'responsive': {
+                                '0': {
+                                    'items': 1
+                                },
+                                '576': {
+                                    'items': 2
+                                },
+                                '768': {
+                                    'items': 3,
+                                    'loop': false
+                                }
+                            }
+                        }">
+                        <div class="icon-box icon-box-side icon-box1 appear-animate" data-animation-options="{
+                                'name': 'fadeInRightShorter',
+                                'delay': '.3s'
+                            }">
+                            <i class="icon-box-icon d-icon-truck"></i>
+                            <div class="icon-box-content">
+                                <h4 class="icon-box-title text-capitalize ls-normal lh-1"> Within 48 Hour Delivery </h4>
+                            </div>
+                        </div>
+
+                        <div class="icon-box icon-box-side icon-box2 appear-animate" data-animation-options="{
+                                'name': 'fadeInRightShorter',
+                                'delay': '.4s'
+                            }">
+                            <i class="icon-box-icon d-icon-service"></i>
+                            <div class="icon-box-content">
+                                <h4 class="icon-box-title text-capitalize ls-normal lh-1">Customer Support 24/7
+                                </h4>
+                                <p class="ls-s lh-1">Instant access to perfect support</p>
+                            </div>
+                        </div>
+
+                        <div class="icon-box icon-box-side icon-box3 appear-animate" data-animation-options="{
+                                'name': 'fadeInRightShorter',
+                                'delay': '.5s'
+                            }">
+                            <i class="icon-box-icon d-icon-secure"></i>
+                            <div class="icon-box-content">
+                                <h4 class="icon-box-title text-capitalize ls-normal lh-1">100% Secure Payment
+                                </h4>
+                                <p class="ls-s lh-1">We ensure secure payment!</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        {% if flashsale %}
+          
+        <div class="page-header mt-5"
+        style="background-image: url('/static/app/images/flash1.png'); background-color: #3C63A4;">
+        <!-- <div class="countdown-content-center">
+            <div class="countdown countdown-default" data-until="59349687" data-relative="true" data-format="DHMS" data-time-now="2022/08/12 13:58:33"></div>
+        </div> -->	
+        <div class="countdown-type3">
+            <div class="countdown countdown-default ct-2-grid border-split countdown-2" data-until="59349687" data-relative="true" data-format="DHMS" data-time-now="2022/08/12 13:58:33">
+            </div>
+        </div>
+    </div>
+    {% endif %}
+        {% if categories%}          
+        <section class="pt-10 mt-7 appear-animate" data-animation-options="{
+            'delay': '.3s'
+        }">
+                <h2 class="title title-center mb-5 pt-2 pb-2" style="background-color: #ebe8fc;">Categories</h2>
+                <div class="owl-carousel owl-theme row owl-nav-full cols-2 cols-md-3 cols-lg-4" data-owl-options="{
+                    'items': 5,
+                    'nav': false,
+                    'loop': true,
+                    'autoplay': true,
+                    'autoplayTimeout': 1500,
+                    'dots': true,
+                    'margin': 20,
+                    'responsive': {
+                        '0': {
+                            'items': 2
+                        },
+                        '768': {
+                            'items': 3
+                        },
+                        '992': {
+                            'items': 5,
+                            'dots': false,
+                            'nav': true
+                        }
+                    }
+                }">
+                {% for category in categories  %}
+                <div class="product text-center">
+                    <figure class="product-media">      
+                        <div class="category category-default1 category-absolute banner-radius overlay-zoom">
+                            <a href="{{category.url}}">
+                                {% if category.category_logo %}
+                                <figure class="category-media">
+                                    <img src="{{category.category_logo.url}}" alt="{{category.category_logo.url}}"
+                                    width="280" height="280" style="background-color: #8c8c8d;" />
+                                </figure>
+                                {% endif %}
+                            </a>
+                        </div>
+                    </figure>
+                </div>
+                {% endfor %}
+        </section>
+        {% endif %}
+        {% if bestsellers %}          
+        <h2 class="title title-center mb-5 pt-2 pb-2 mt-5" style="background-color: #ebe8fc;">Best Sellers</h2>
+        <section class="product-wrapper container appear-animate" data-animation-options="{
+            'delay': '.3s'
+        }">
+            <div class="owl-carousel owl-theme row owl-nav-full cols-2 cols-md-3 cols-lg-4" data-owl-options="{
+                'items': 5,
+                'nav': false,
+                'loop': false,
+                'dots': true,
+                'margin': 20,
+                'responsive': {
+                    '0': {
+                        'items': 2
+                    },
+                    '768': {
+                        'items': 3
+                    },
+                    '992': {
+                        'items': 5,
+                        'dots': false,
+                        'nav': true
+                    }
+                }
+            }">
+                {% for product in bestsellers %}
+                {% include "snippets/product-wrap.html" %}
+                {% endfor %}
+            </div>
+        </section>
+        {% endif %}
+        {% if featured_offer %}          
+        <h2 class="title title-center mb-5 pt-2 pb-2 mt-5" style="background-color: #ebe8fc;">Featured Offers</h2>
+        <section class="container appear-animate" data-animation-options="{
+            'delay': '.3s'
+        }">
+            <div class="container">
+                <div class="row">
+                    {% for offer in featured_offer %}
+                    <div class="col-xs-6 col-lg-3 mb-4">
+                        <div class="category category-default1 category-absolute banner-radius overlay-zoom">
+                            <a href="{{offer.url}}">
+                                <figure class="category-media">
+                                    <img src="{{offer.offer_image.url}}" alt="category" width="280"
+                                        height="280" style="background-color: #8c8c8d;" />
+                                </figure>
+                            </a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </section>
+        {% endif %}
+        {% if brands %}
+        <h2 class="title title-center mb-2 mt-5 pb-2 pt-2" style="background-color: #ebe8fc;">Brands</h2>
+        <section class="mt-2 pb-6 pt-10 pb-md-10 mb-10 appear-animate" data-animation-options="{
+            'delay': '.3s'
+        }">
+            <div class="container">
+                <div class="owl-carousel owl-theme row brand-carousel cols-xl-6 cols-lg-5 cols-md-4 cols-sm-3 cols-2"
+                    data-owl-options="{
+                    'nav': true,
+                    'dots': false,
+                    'autoplay': true,
+                    'autoplayTimeout': 3000,
+                    'margin': 20,
+                    'loop': true,
+                    'responsive': {
+                        '0': {
+                            'items': 2
+                        },
+                        '576': {
+                            'items': 3
+                        },
+                        '768': {
+                            'items': 4
+                        },
+                        '992': {
+                            'items': 5
+                        },
+                        '1200': {
+                            'items': 6
+                        }
+                    }
+                }" >
+                {% for brand in brands %}
+                  
+                <div class="category category-default1 category-absolute banner-radius overlay-zoom">
+                    <a href="{% url 'brand' brand.brand_url %}">
+                    <figure class="category-media">
+                    <img src="{{brand.brand_logo.url}}" alt="category" width="280" height="280" style=" height: 75px; width: 120px;">
+                    </figure>
+                    </a>
+                </div>
+                {% endfor %}
+                </div>
+            </div>
+        </section>
+        {% endif %}
+    </div>
+
+</main>
+{% endblock main-content %}

@@ -5,9 +5,9 @@ from app.models import BilingAddress , Product, Cart , CartItem , OrderItem ,Ord
 # Register your models here.
 from .forms import ProductForm , BrandForm , InformationForm , Product_imagesForm , ProductAttributeForm , ProductAttributeValueForm , ProductVariationForm
 from django.utils.html import format_html
-from accounts.models import User
+from django.contrib.auth.models import User
 from django.utils.safestring import mark_safe
-admin.site.register(User)
+
 admin.site.register(Coupon)
 
 class Product_imagesInline(admin.TabularInline):

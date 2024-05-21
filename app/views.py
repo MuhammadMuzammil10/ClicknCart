@@ -1,10 +1,11 @@
 from django.template.loader import get_template , render_to_string
 from datetime import date
+import time
 from django.template import RequestContext
 from django.core.mail import send_mail
 import json , datetime , csv
 from django.db.models.functions import TruncQuarter , TruncMonth , TruncDay , TruncHour
-from django.shortcuts import render, redirect 
+from django.shortcuts import render, redirect , get_object_or_404
 from app.forms import LoginForm, Registerationform , MyPasswordChangeForm , TrackOrderForm , NewsLetterForm , CouponForm
 from app.models import Product, Cart, BilingAddress, Order , OrderItem, Product_images , Reviews, TopCategory , Category , Subcategory , Banner , Brand , SubSubcategory , Information , FeaturedOffer , WishList , ProductVariation , ProductAttribute , ProductAttributeValue , Coupon , CartItem , FlashSale , FlashSaleItem
 from django.contrib.auth import login, authenticate , update_session_auth_hash
@@ -14,7 +15,7 @@ from app.forms import MyPasswordChangeForm, ProfileForm , ReviewsForm
 from django.contrib.auth.views import PasswordChangeView, PasswordChangeDoneView
 from django.http import JsonResponse , response
 from django.db.models import Q , Min , Max
-from accounts.models import User
+from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required 
 from django.utils.decorators import method_decorator
 from django.db.models import Sum , Avg
@@ -187,7 +188,6 @@ def product_detail(request, product_url):
     return render(request, 'app/product-details.html', context)
 
 
-
 def shop(request, category = None, subcategory = None , subsubcategory = None):
     if subsubcategory:
         subsubcategory = slugify(subsubcategory)
@@ -218,14 +218,13 @@ def _cart_id(request):
     return cart
 
 
-def add_to_cart(request):
-    
+def add_to_cart(request, prod_id):
+    time.sleep(3)
     usr = request.user
-    prod_id = request.GET.get('prod_id')
     prod_qty = int(request.GET.get('prod_qty')) if  request.GET.get('prod_qty') else None
-    prod_vrnt = request.GET.get('variation_select')
+    prod_vrnt = request.GET.get('variation_select') if request.GET.get('variation_select') else None
     prod = Product.objects.get(pk = prod_id)
-    if prod_vrnt != 'None':
+    if prod_vrnt != None:
         try:
             attribute_name, attribute_value = prod_vrnt.split(':')
             attribute_name = attribute_name.strip()
@@ -286,9 +285,11 @@ def add_to_cart(request):
         quantity = 0
         q = CartItem.objects.get(Q(cart = cart) & Q(product = prod_id ) )
         cart = Cart.objects.get(cart_id = _cart_id(request))
+        total_quantity = cart.total_quantity
+        subtotal = cart.subtotal
         item = list(Product.objects.filter(pk = prod_id).values())
-        data = {"amount":cart.subtotal,"totalAmount":cart.total,'count':cart.total_quantity,'product':item,'quantity':q.quantity , 'product_img' : prod.main_picture.url}
-        return JsonResponse({'status':'add', "data":data})
+        context = {'count': total_quantity,'nav_cart':cart,'Subtotal': subtotal}
+        return render(request, 'includes/dropdown-cart.html', context)
     else:
         return JsonResponse({'status' : 'quantity error' , 'error' : 'The requested quantity is not available' })
 
@@ -363,7 +364,6 @@ def minus_cart(request):
     else:
         data = {}
     return JsonResponse({"data":data})
-    
              
 def delete_cart(request):
     cart = Cart.objects.get(cart_id = _cart_id(request))
@@ -978,7 +978,7 @@ def export_products(request):
 
     return response
 
-#def export_sale_report(request , period):
+# def export_sale_report(request , period):
 
     # Create a new Excel workbook and add a worksheet
     workbook = xlsxwriter.Workbook('sale_report.xlsx')

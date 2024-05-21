@@ -1,0 +1,73 @@
+<div class="mobile-menu-wrapper">
+    <div class="mobile-menu-overlay">
+    </div>
+    <!-- End Overlay -->
+    <a class="mobile-menu-close" href="#"><i class="d-icon-times"></i></a>
+    <!-- End CloseButton -->
+    <div class="mobile-menu-container scrollable">
+        <form action="{% url 'search' %}" class="input-wrapper">
+            <input type="text" class="form-control" name="search" autocomplete="off"
+                placeholder="Search your keyword..." required />
+            <button class="btn btn-search" type="submit">
+                <i class="d-icon-search"></i>
+            </button>
+        </form>
+        <!-- End Search Form -->
+        <ul class="mobile-menu mmenu-anim">
+            <li>
+                <a href="/">Home</a>
+            </li>
+            
+            <li>
+                <a href="{% url 'categories' %}" class="active">Categories</a>
+                <ul>
+                    {% for category in main_categories %}
+                    <li>
+                        <a href="{{ category.url }}"> {{ category.name }} </a>
+                        {% if category.subcategory_set.all %}                              
+                        <ul>
+                            {% for subcategory in category.subcategory_set.all %}
+
+                            <li><a href="{{ subcategory.url }}"> {{subcategory.name}} </a>
+                                <ul>
+                                    {% for subsubcategory in subcategory.subsubcategory_set.all %}
+
+                                    <li><a href="{{ subsubcategory.url }}"> {{subsubcategory.name}} </a></li>
+
+                                    {% endfor %}
+                                </ul>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
+                    </li>
+                    {% endfor %}
+                </ul>
+            </li>
+            <li>
+                <a href="{% url 'account' %}">{{request.user}}</a>
+                <ul>
+                    {% if request.user.is_authenticated %}
+                    <li><a href="{% url 'account' %}">My Account</a></li>
+                    <li><a href="{% url 'logout' %}">Logout</a></li>
+                    <li><a href="{% url 'account' %}#orders">Orders</a></li>
+                    {% else %}
+                    <li><a href="{% url 'login' %}">Login</a></li>
+                    {% endif %}
+                    <li><a href="{% url 'contact-us' %}">Contact Us</a></li>
+                    <li><a href="{% url 'faq' %}">FAQs</a></li>
+                </ul>
+            </li>
+            <li>
+                <a href="/brand/">Brands</a>
+                <ul>
+                    {% for brand in  brands %}
+                    <li><a href="/brand/{{brand.brand_url}}"> {{brand.brand_name}} </a></li>
+                    {% endfor %}
+                </ul>
+            </li>
+        </ul>
+        <!-- End MobileMenu -->
+    </div>
+
+</div>

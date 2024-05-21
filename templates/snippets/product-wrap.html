@@ -1,0 +1,102 @@
+{% load custom_filters %}
+{% load static %}
+    <div class="product product-image-gap text-center  cart-full"  style="height: 384px;">
+        <figure class="product-media">
+            <div class="product-img">
+                <div onclick="window.location.href='{{ product.get_absolute_url }}'" style="cursor:pointer;">
+                    <img class="front-img" src="{{product.main_picture.url}}" alt="Best Seller" width="280"
+                         height="315" style="background-color: #f2f3f5; height: 220px; " />
+                         {% if product.product_images_set.first %}
+                         <img class="rear-img" src="{{product.product_images_set.first.RelatedImages.url}}" alt="Best Seller" width="280"
+                         height="315" style="background-color: #f2f3f5; height: 220px; " onmouseover="this.src='{{product.product_images_set.last.RelatedImages.url}}'"
+                         onmouseout="this.src='{{product.product_images_set.first.RelatedImages.url}}'" />
+                         {% endif %}
+                </div>
+            </div>
+            <!-- {% if product.discount_perc > 0 %} -->
+            <div class="product-label-group">
+                <label class="product-label label-sale">-{{product.discount_perc}}% off</label>
+            </div>
+            <!-- {% endif %} -->
+            {% if product.out_of_stock %}
+            <div class="OOS">Out of stock</div>			
+            {% endif %}
+            <div class="product-action-vertical">
+                <a href="#" class="btn-product-icon btn-wishlist addtowishlist"
+                pid="{{product.id}}"    title="Add to wishlist"><i class="d-icon-heart"></i></a>
+            </div>
+        </figure>
+        <div class="product-details">
+            <div class="product-cat">
+                <a href="{% url 'brand' product.brand.brand_url %}">{{product.brand}}</a>
+            </div>
+            <h3 class="product-name">
+                <a href="{{ product.get_absolute_url }}">{{product.title}}</a>
+            </h3>
+            <div class="product-price" style="font-size: smaller;">
+                <span class="price">Rs.{{ product.discounted_price|format_price }}</span>
+                {% if product.selling_price %}
+                    <del class="old-price">Rs.{{product.selling_price}}</del>
+                {% endif %}
+            </div>
+            {% if product.reviews_set.count  > 0 %}
+            <div class="ratings-container">
+                <div class="ratings-full">
+                    <span class="ratings" style="width:{{ product.average_rating}}%"></span>
+                    <span class="tooltiptext tooltip-top"></span>
+                </div>
+                <a href="#" class="rating-reviews">( <span class="review-count"> {{ product.reviews_set.count }} </span> reviews)</a>
+            </div>
+            {% endif %}
+            {% if not product.out_of_stock %}
+                {% if product.product_type != '2' %}
+                <a class="btn-product-no-modal btn-cart" title="Add to cart"
+                    hx-get="{% url 'add-to-cart' product.id %}"
+                    hx-target="#cart-dropdown"
+                    hx-swap="innerHTML"
+                    hx-trigger="click"
+                    hx-indicator="#indicator-{{ product.id }}">
+                        <!-- By Sam Herbert (@sherb), for everyone. More @ http://goo.gl/7AJzbL -->
+                        <svg width="60" height="16" class="spinner" id="indicator-{{ product.id }}" viewBox="0 0 120 30" xmlns="http://www.w3.org/2000/svg" fill="#fff">
+                            <circle cx="15" cy="15" r="15">
+                                <animate attributeName="r" from="15" to="15"
+                                        begin="0s" dur="0.8s"
+                                        values="15;9;15" calcMode="linear"
+                                        repeatCount="indefinite" />
+                                <animate attributeName="fill-opacity" from="1" to="1"
+                                        begin="0s" dur="0.8s"
+                                        values="1;.5;1" calcMode="linear"
+                                        repeatCount="indefinite" />
+                            </circle>
+                            <circle cx="60" cy="15" r="9" fill-opacity="0.3">
+                                <animate attributeName="r" from="9" to="9"
+                                        begin="0s" dur="0.8s"
+                                        values="9;15;9" calcMode="linear"
+                                        repeatCount="indefinite" />
+                                <animate attributeName="fill-opacity" from="0.5" to="0.5"
+                                        begin="0s" dur="0.8s"
+                                        values=".5;1;.5" calcMode="linear"
+                                        repeatCount="indefinite" />
+                            </circle>
+                            <circle cx="105" cy="15" r="15">
+                                <animate attributeName="r" from="15" to="15"
+                                        begin="0s" dur="0.8s"
+                                        values="15;9;15" calcMode="linear"
+                                        repeatCount="indefinite" />
+                                <animate attributeName="fill-opacity" from="1" to="1"
+                                        begin="0s" dur="0.8s"
+                                        values="1;.5;1" calcMode="linear"
+                                        repeatCount="indefinite" />
+                            </circle>
+                        </svg>
+                        <span class="button-content"><i class="d-icon-bag"></i> Add to cart</span>
+                </a>                    
+                {% else %}
+                    <a class="btn-product-no-modal btn-cart" href="{{product.get_absolute_url}}" title="Select Option"><i
+                    class="d-icon-bag"></i>Select Option</a>
+                {% endif %}
+            {% else %}
+            <a class="btn-product-no-modal btn-cart addtowishlist"  pid="{{bestseller.id}}" title="Add to cart"><i class="d-icon-heart"></i></a>
+            {% endif %}
+        </div>
+    </div>

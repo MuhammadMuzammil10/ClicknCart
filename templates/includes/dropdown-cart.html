@@ -1,0 +1,74 @@
+{% load l10n  %}
+    <a href="#" class="cart-toggle label-block link">
+        <div class="cart-label d-lg-show">
+            <span class="cart-name">Shopping Cart:</span>
+            {% if Subtotal %}
+            <span class="cart-price Subtotal">Rs.{{Subtotal|localize}}</span>
+            {% endif %}
+        </div>
+        <i class="d-icon-bag"> {% if count %}<span class="cart-count" id="count">{{count}}</span> {% endif %}  </i>
+    </a>
+    <div class="cart-overlay"></div>
+    <!-- End Cart Toggle -->
+    <div class="dropdown-box">
+        <section id="main-cart">
+            <div class="cart-header" id="cart-header">
+                <h4 class="cart-title">Shopping Cart</h4>
+                <a href="#" class="btn btn-dark btn-link btn-icon-right btn-close">close<i
+                        class="d-icon-arrow-right"></i><span class="sr-only">Cart</span></a>
+            </div>
+            {% if nav_cart %}
+            <div class="products scrollable" id="nav-cart">
+                {% for cart in nav_cart.cartitem_set.all %}
+                <div class="product product-cart">
+                    <figure class="product-media">
+                        <a href="{{ cart.product.get_absolute_url }}">
+                            <img src="{{cart.product.main_picture.url}}" alt="product"
+                                width="80" height="88" />
+                        </a>
+                        <button class="btn btn-link btn-close remove_btn"
+                            pid="{{cart.product.id}}">
+                            <i class="fas fa-times"></i><span class="sr-only">Close</span>
+                        </button>
+                    </figure>
+                    <div class="product-detail">
+                        <a href="{{ cart.product.get_absolute_url }}"
+                            class="product-name d-2">{{cart.product.title}} {% if cart.variant %} - {{cart.variant.attributes.value}} {% endif %} </a>
+                        <div class="price-box">
+                            <span class="product-quantity"
+                                id="item{{cart.product.id}}">{{cart.quantity}}</span>
+                                {% if cart.variant.price %}
+                                    <span class="product-price">Rs.{{cart.variant.price|localize }}</span>
+                                {% else %}  
+                                    <span class="product-price">Rs.{{cart.product.discounted_price|localize }}</span>
+                                {% endif %}
+                        </div>
+                    </div>
+
+                </div>
+                {% endfor %}
+
+
+                <!-- End of Cart Product -->
+            </div>
+            <!-- End of Products  -->
+            <div class="cart-total">
+                <label>Subtotal:</label>
+                <span class="price Subtotal">Rs.{{Subtotal|localize }}</span>
+            </div>
+            <!-- End of Cart Total -->
+            <div class="cart-action">
+                <a href="{% url 'show-cart' %}" class="btn btn-dark btn-link">View Cart</a>
+                <a href="{% url 'checkout' %}" class="btn btn-dark"><span>Go To
+                        Checkout</span></a>
+            </div>
+            <!-- End of Cart Action -->
+        </section>
+        {% else %}
+
+        <h4 class="heading mt-5 mb-5" id="no-product" style="font-size: medium;" >No Product in Your Cart</h4>
+
+        {% endif %}
+
+    </div>
+    <!-- End Dropdown Box -->

@@ -1,7 +1,7 @@
 from django.db import models
 from django.db.models import Avg
 # from django.contrib.auth.models import User
-from accounts.models import User
+from django.contrib.auth.models import User
 from django.utils.text import slugify
 import math
 from datetime import datetime
