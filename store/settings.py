@@ -140,7 +140,7 @@ if ENVIRONMENT == 'production' or POSTGRES_LOCALLY == True:
     }
 else:
     MEDIA_ROOT = BASE_DIR / 'media'
-
+    
 WSGI_APPLICATION = 'store.wsgi.application'
 
 # Password validation
